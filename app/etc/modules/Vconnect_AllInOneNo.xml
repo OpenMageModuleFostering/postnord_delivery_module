@@ -1,0 +1,11 @@
+<config>
+    <modules>
+        <Vconnect_AllInOneNo>
+            <active>true</active>
+            <codePool>community</codePool>
+            <depends>
+                <Vconnect_AllInOne/>
+            </depends>
+        </Vconnect_AllInOneNo>
+    </modules>
+</config>

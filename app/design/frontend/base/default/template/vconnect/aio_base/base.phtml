@@ -1,0 +1,253 @@
+<?php
+
+/* 
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/base.phtml
+ */
+
+/* @var $this Vconnect_AllInOne_Block_Shipping_Dialog */
+?>
+
+<!--[if IE 8]>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl("css/vconnect/aio/blue_ie8.css") ?>" media="all" />
+<![endif]-->
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-1.11.3.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-ui.js') ?>"></script>
+<script type="text/javascript">
+    jQuery.noConflict();
+</script>
+
+<?php
+$rates = $this->getRates();
+/* @var $rates Mage_Sales_Model_Resource_Quote_Address_Rate_Collection */
+?>
+<input class="aio-hidden" name="payment_ain_vconnect_postnord_data" value='' style="display: none;">
+
+<?php echo $this->getChildHtml('tab_headers') ?>
+<script type="text/javascript">
+    (function (d, id) {
+        if (d.getElementById(id)) {
+            return;
+        }
+        if (d.head === undefined && document.getElementsByTagName('head').length > 0) {
+            head_element = document.getElementsByTagName('head')[0];
+        } else {
+            head_element = d.head;
+        }
+        var css = d.createElement('link');
+        css.id = id;
+        css.type = 'text/css';
+        css.href = "https://fonts.googleapis.com/css?family=Roboto:400,700,800";
+        css.rel = "stylesheet";
+        head_element.appendChild(css);
+
+        var css1 = d.createElement('link');
+        css1.type = 'text/css';
+//        css1.href   = "<?php echo $this->getSkinUrl("css/vconnect/aio/{$this->getColor()}.css") ?>";
+        css1.href = "<?php echo $this->getSkinUrl("css/vconnect/aio/blue.css") ?>";
+        css1.rel = "stylesheet";
+        head_element.appendChild(css1);
+    }(document, 'vconnect_postnord_scripts'));
+
+    if (typeof console === "undefined" || typeof console.log === "undefined") {
+        console = {};
+        console.log = function() {};
+        console.info = function() {};
+    }
+</script>
+<?php echo $this->getChildHtml('body_scripts') ?>
+
+<?php if (Mage::getStoreConfigFlag('carriers/vconnect_postnord/environmental_fee')): ?>
+    <div id="environmental_fee" style="display: none;">
+        <label class="aino-custom-input cf">
+            <span class="aino-custom-input-text">
+                <?php echo $this->__('Environmental fee'); ?>
+                <span class="aino-env-free-help">
+                    <span class="aino-env-free-help-icon">?</span>
+                    <span class="aino-env-fee-info-popup">
+                        <span><?php echo $this->__("Your 10 crowns will go to projects certified by the UN. The projects aim to replace fossil energy production in developing countries with renewable energy. The projects are also certified according to the Gold Standard, which involves additional requirements on social responsibility and sustainable development. You can read more about carbon offsetting and PostNord's sustainability work on postnord.com"); ?></span>
+                    </span>
+                </span>
+                <span class="aino-delivery-price"><span
+                        class="price">+<?php echo Mage::getSingleton('checkout/session')->getQuote()->getStore()->convertPrice((float)10, true, true); ?></span></span>
+                <i><?php echo $this->__('By paying 10 crowns carbon offsets for my delivery and contribute to the transition to renewable energy.'); ?></i>
+
+            </span>
+            <input type="checkbox" name="vconnect_postnord_environmental_fee" value="1"/>
+            <span class="aino-custom-checkbox-indicator"></span>
+        </label>
+    </div>
+<?php endif; ?>
+
+<script type="text/javascript">
+    var init_runned = false;
+    jQuery(document).ready(function () {
+        if (init_runned == false) {
+            InitAioBaseScripts();
+            init_runned = true;
+        }
+    });
+    jQuery(window).load(function () {
+        if (init_runned == false) {
+            InitAioBaseScripts();
+            init_runned = true;
+        }
+    });
+
+   function InitAioBaseScripts() {
+        var $ = jQuery;
+
+        $("input[name=shipping_method]").each(function () {
+            var self = $(this);
+            if (self.is(':checked') && self.val().indexOf('vconnect_postnord_') != -1) {
+                $('.aio-options[data-code=' + self.val() + ']').addClass('active');
+                if ($('#environmental_fee').length != 0) {
+                    $('#environmental_fee').show();
+                }
+            }
+        });
+        $('select[name*="_delivery"]').each(function () {
+            console.log(this);
+            var self = $(this);
+            var txtArea = $('textarea.other-txt', self.parent());
+//           console.log('txt area');
+//           console.log(txtArea);
+            if (self.val() === '<?php echo Mage::helper('vc_aio')->__('Other place'); ?>' || self.val() == 'Utan kvittens (paketet ställs utanför dörren)') {
+                txtArea.show();
+            } else {
+                txtArea.hide();
+            }
+        });
+
+
+        $("input[name=shipping_method]").on('change', function () {
+            if ($('#environmental_fee').length != 0) {
+                $('#environmental_fee').hide();
+            }
+
+            $('.aio-options').removeClass('active');
+            var self = $(this);
+            if (self.val().indexOf('vconnect_postnord_') != -1) {
+                $('.aio-options[data-code=' + self.val() + ']').addClass('active');
+
+                if ($('#environmental_fee').length != 0) {
+                    $('#environmental_fee').show();
+                }
+            }
+            if (self.val().indexOf('_pickup') != -1) {
+                $('.aio-hidden').show();
+            } else {
+                $('.aio-hidden').hide();
+            }
+
+            if ($('.aio-options[data-code=' + self.val() + '] select[name*="_arrival"]').length) {
+                $('.aio-options[data-code=' + self.val() + '] select[name*="_arrival"]').trigger('change');
+            }
+
+        });
+
+        $('select[name*="_delivery"]').on('change', function () {
+            var self = $(this);
+            var txtArea = self.parent().find('textarea');
+            if (self.val() === '<?php echo Mage::helper('vc_aio')->__('Other place'); ?>' || self.val() == 'Utan kvittens (paketet ställs utanför dörren)') {
+                txtArea.show();
+            } else {
+                txtArea.hide();
+            }
+        });
+
+        <?php if (Mage::getStoreConfigFlag('carriers/vconnect_postnord/environmental_fee')): ?>
+        $('[name="vconnect_postnord_environmental_fee"]').on('change', function () {
+            if ($("input[name=shipping_method]:checked").length != 0 && $("input[name=shipping_method]:checked").val().indexOf('vconnect_postnord_') != -1) {
+                var obj = {
+                    code: $("input[name=shipping_method]:checked").val(),
+                    arrival: $('select[name="' + $("input[name=shipping_method]:checked").val() + '_arrival"]').length ? $('select[name="' + $("input[name=shipping_method]:checked").val() + '_arrival"]').val() : false,
+                    delivery: $('select[name="' + $("input[name=shipping_method]:checked").val() + '_delivery"]').length ? $('select[name="' + $("input[name=shipping_method]:checked").val() + '_delivery"]').val() : false,
+                    flexdelivery: false,
+                    carrier: '<?php echo $this->escapeHtml($this->getCarrierTitle())?>',
+                    description: false
+                };
+
+                obj.environmental_fee = 0;
+                if ($('[name="vconnect_postnord_environmental_fee"]:checked').length != 0) {
+                    obj.environmental_fee = 1;
+                }
+
+                $('input[name=payment_ain_vconnect_postnord_data]').val(JSON.stringify(obj));
+
+                // Start fixer for IWD_OPC
+                if (typeof IWD !== 'undefined' && typeof IWD.OPC !== 'undefined' && typeof IWD.OPC.Shipping !== 'undefined' && typeof IWD.OPC.Checkout !== 'undefined' && IWD.OPC.Checkout.isVirtual === false) {
+                    IWD.OPC.Shipping.saveShippingMethod();
+                }
+                // End fixer for IWD_OPC
+
+                // Start fixer for Onestepcheckout (Both trigger clicks for reload total section)
+                if ($('#onestepcheckout-form').length > 0) {
+                    $('#onestepcheckout-form input[name="payment[method]"]:checked').trigger('click');
+                    setTimeout(function () {
+                        $('#onestepcheckout-form input[name="payment[method]"]:checked').trigger('click');
+                    }, 900);
+                }
+                // End fixer for IWD_OPC
+            }
+        });
+        $('[name="vconnect_postnord_environmental_fee"]').trigger('change');
+        <?php endif; ?>
+
+        <?php
+        if ($rates) {
+            foreach ($rates as $rate) {
+                if (empty($rate['code']) || empty($rate['vc_method_data'])) {
+                    continue;
+                }
+
+                $method_code = $rate['code'];
+                $method_data = json_decode($rate['vc_method_data']);
+
+                if ($method_data && $method_data->delivery_time) {
+                ?>
+                $("input[name=shipping_method]").each(function () {
+                    if ($(this).val() == '<?php echo $method_code; ?>') {
+                        $(this).parent().find('span.price').before('<span class="transit_time"> <?php echo $method_data->delivery_time; ?> </span>');
+                    }
+                });
+                <?php
+                }
+            }
+        }
+        ?>
+
+        // postcode reload - fix for Magestore_Onestepcheckoud
+        if ($('#one-step-checkout-form').length > 0 && typeof save_address_information !== 'undefined' && typeof save_address_url !== 'undefined' && typeof update_address_shipping !== 'undefined' && typeof update_address_payment !== 'undefined' && typeof update_address_review !== 'undefined') {
+            $('[name="billing[postcode]"],[name="shipping[postcode]"]').change(function () {
+                save_address_information(save_address_url, update_address_shipping, update_address_payment, update_address_review);
+            });
+        }
+    }
+</script>   
+

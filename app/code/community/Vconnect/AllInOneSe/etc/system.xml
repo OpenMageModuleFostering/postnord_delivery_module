@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <sections>                      <!-- system config section -->
+        <carriers>
+            <groups>
+                <vconnect_postnord_mailbox >
+                    <label>PostNord - To mailbox</label>
+                    <frontend_type>text</frontend_type>
+                    <sort_order>96</sort_order>
+                    <show_in_default>1</show_in_default>  
+                    <show_in_website>1</show_in_website>
+                    <show_in_store>1</show_in_store>
+                    <fields>
+                        <active translate="label">
+                            <label>Enabled</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>10</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </active>
+
+                        <name translate="label">
+                            <label>Method name</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>30</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </name>
+                        <arrival_option_text translate="label">
+                            <label>Option text</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>35</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </arrival_option_text>
+                        <price_se translate="label">
+                            <label>Price to Sweden</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>vc_aio/adminhtml_shipping_table</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>100</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </price_se>
+                        <price_no translate="label">
+                            <label>Price to Norway</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>vc_aio/adminhtml_shipping_table</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>110</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </price_no>
+                        <price_dk translate="label">
+                            <label>Price to Danmark</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>vc_aio/adminhtml_shipping_table</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>120</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </price_dk>
+                        <price_eu translate="label">
+                            <label>Price to EU</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>vc_aio/adminhtml_shipping_table</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>123</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </price_eu>
+                        <price_intl translate="label">
+                            <label>Price to International</label>
+                            <frontend_type>text</frontend_type>
+                            <frontend_model>vc_aio/adminhtml_shipping_table</frontend_model>
+                            <backend_model>adminhtml/system_config_backend_serialized_array</backend_model>
+                            <sort_order>126</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </price_intl>
+                        <transit_time translate="label">
+                            <label>Transit Time</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>128</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>1</show_in_store>
+                        </transit_time>
+                        <additional_fee_active translate="label">
+                            <label>Enable Additional Fee</label>
+                            <frontend_type>select</frontend_type>
+                            <source_model>adminhtml/system_config_source_yesno</source_model>
+                            <sort_order>130</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </additional_fee_active>
+                        <additional_fee_label translate="label">
+                            <label>Fee Label</label>
+                            <comment>This is the delivery time the customer sees during checkout</comment>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>133</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><additional_fee_active>1</additional_fee_active></depends>
+                        </additional_fee_label>
+                        <additional_fee_amount translate="label">
+                            <label>Fee amount</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>135</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                            <depends><additional_fee_active>1</additional_fee_active></depends>
+                        </additional_fee_amount>
+                        <sort_order translate="label">
+                            <label>Sort Order</label>
+                            <frontend_type>text</frontend_type>
+                            <sort_order>140</sort_order>
+                            <show_in_default>1</show_in_default>
+                            <show_in_website>1</show_in_website>
+                            <show_in_store>0</show_in_store>
+                        </sort_order>
+                    </fields>
+                </vconnect_postnord_mailbox>
+                <vconnect_postnord_business>
+                    <fields>
+                    </fields>
+                </vconnect_postnord_business>
+                <vconnect_postnord_home>
+                    <fields>
+                    </fields>
+                </vconnect_postnord_home>
+                <vconnect_postnord_pickup>
+                     <fields>
+                    </fields>
+                </vconnect_postnord_pickup>
+            </groups>
+        </carriers>
+    </sections>
+</config>

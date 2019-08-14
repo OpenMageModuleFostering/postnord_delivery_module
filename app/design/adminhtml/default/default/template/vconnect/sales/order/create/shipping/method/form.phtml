@@ -1,0 +1,216 @@
+<?php
+/**
+ * Magento
+ *
+ * NOTICE OF LICENSE
+ *
+ * This source file is subject to the Academic Free License (AFL 3.0)
+ * that is bundled with this package in the file LICENSE_AFL.txt.
+ * It is also available through the world-wide-web at this URL:
+ * http://opensource.org/licenses/afl-3.0.php
+ * If you did not receive a copy of the license and are unable to
+ * obtain it through the world-wide-web, please send an email
+ * to license@magento.com so we can send you a copy immediately.
+ *
+ * DISCLAIMER
+ *
+ * Do not edit or add to this file if you wish to upgrade Magento to newer
+ * versions in the future. If you wish to customize Magento for your
+ * needs please refer to http://www.magento.com for more information.
+ *
+ * @category    design
+ * @package     default_default
+ * @copyright   Copyright (c) 2006-2015 X.commerce, Inc. (http://www.magento.com)
+ * @license     http://opensource.org/licenses/afl-3.0.php  Academic Free License (AFL 3.0)
+ */
+?>
+<?php /** @var $this Mage_Adminhtml_Block_Sales_Order_Create_Shipping_Method_Form */ ?>
+<?php $_shippingRateGroups = $this->getShippingRates(); ?>
+<?php if ($_shippingRateGroups): ?>
+    <div id="order-shipping-method-choose" style="display:none">
+    <dl class="shipment-methods">
+    <?php foreach ($_shippingRateGroups as $code => $_rates): ?>
+        <dt><strong><?php echo $this->escapeHtml($this->getCarrierName($code)) ?></strong></dt>
+        <dd>
+            <ul>
+            <?php foreach ($_rates as $_rate): ?>
+                <?php $_radioProperty = 'name="order[shipping_method]" type="radio"' ?>
+                <?php $_code=$_rate->getCode() ?>
+                <li>
+                   <?php if ($_rate->getErrorMessage()): ?>
+                        <ul class="messages">
+                            <li class="error-msg"><?php echo $this->escapeHtml($_rate->getErrorMessage()) ?></li>
+                        </ul>
+                   <?php else: ?>
+                        <?php $_checked = $this->isMethodActive($_code) ? 'checked="checked"' : '' ?>
+                        <input <?php echo $_radioProperty ?> value="<?php echo $_code ?>" id="s_method_<?php echo $_code ?>" <?php echo $_checked ?>/>
+                        <label class="normal" for="s_method_<?php echo $_code ?>">
+                            <?php echo $this->escapeHtml($_rate->getMethodTitle() ? $_rate->getMethodTitle() : $_rate->getMethodDescription()) ?> -
+                            <strong>
+                                <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                                <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+
+                                <?php echo $_excl; ?>
+                                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                                <?php endif; ?>
+                            </strong>
+                        </label>
+                   <?php endif ?>
+                </li>
+            <?php endforeach; ?>
+            </ul>
+        </dd>
+    <?php endforeach; ?>
+    </dl>
+    <div>
+        <button id="aio_shipping_save"  name="aio_shipping_save"  class="button validation-passed" type="button">
+            <span><span><?php echo $this->__('Save shipping data') ?></span></span>
+        </button>
+    </div>
+    </div>
+    <?php /* if ($_rate = $this->getActiveMethodRate()): ?>
+        <div id="order-shipping-method-info">
+            <strong><?php echo $this->escapeHtml($this->getCarrierName($_rate->getCarrier())) ?></strong><br/>
+            <?php echo $this->escapeHtml($_rate->getMethodTitle() ? $_rate->getMethodTitle() : $_rate->getMethodDescription()) ?> -
+            <strong>
+                <?php $_excl = $this->getShippingPrice($_rate->getPrice(), $this->helper('tax')->displayShippingPriceIncludingTax()); ?>
+                <?php $_incl = $this->getShippingPrice($_rate->getPrice(), true); ?>
+
+                <?php echo $_excl; ?>
+                <?php if ($this->helper('tax')->displayShippingBothPrices() && $_incl != $_excl): ?>
+                    (<?php echo $this->__('Incl. Tax'); ?> <?php echo $_incl; ?>)
+                <?php endif; ?>
+            </strong>
+            <!--input type="text" class="input-text" style="width:70px"/-->
+            <br/>
+            <a href="#" onclick="$('order-shipping-method-info').hide();$('order-shipping-method-choose').show();return false">
+                <?php echo Mage::helper('sales')->__('Click to change shipping method') ?>
+            </a>
+        </div>
+    <?php else: */ ?>
+        <script type="text/javascript">$('order-shipping-method-choose').show();</script>
+    <?php //endif; ?>
+<?php elseif($this->getIsRateRequest()): ?>
+    <strong><?php echo Mage::helper('sales')->__('Sorry, no quotes are available for this order at this time.') ?></strong>
+<?php else: ?>
+    <div id="order-shipping-method-summary">
+        <a href="#" onclick="order.loadShippingRates();return false">
+            <?php echo Mage::helper('sales')->__('Get shipping methods and rates') ?>
+        </a>
+    </div>
+<?php endif; ?>
+<input type="hidden" name="order[has_shipping]" value="" class="required-entry" />
+<div style="display:none;" id="shipping-method-overlay" class="overlay"><span><?php echo $this->__('Shipping method selection is not applicable') ?></span></div>
+<script type="text/javascript">
+order.overlay('shipping-method-overlay', <?php if ($this->getQuote()->isVirtual()): ?>false<?php else: ?>true<?php endif; ?>);
+order.overlay('address-shipping-overlay', <?php if ($this->getQuote()->isVirtual()): ?>false<?php else: ?>true<?php endif; ?>);
+</script>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-1.11.3.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-ui.js') ?>"></script>
+<script type="text/javascript">
+    jQuery.noConflict();
+</script>
+
+<?php $deliveries = Mage::helper('vc_aio')->getFelxDeliveryByMethodCode($this->getCode()); ?>
+<script type="text/javascript">
+    jQuery('document').ready(function($) {
+        if ($('input[name="order[shipping_method]"]:checked').length) {
+            if ($('input[name="order[shipping_method]"]:checked').val().indexOf('vconnect_postnord_') == -1 || ($('input[name="order[shipping_method]"]:checked').val().indexOf('vconnect_postnord_') != -1 && $('input[name="order[shipping_method]"]:checked').val().indexOf('pickup') == -1)) {
+                if ($('input[name=vconnect_postnord_data]').length != 0) {
+                    $('input[name=vconnect_postnord_data]').removeClass('required-entry');
+                }
+                $('input[name="order[has_shipping]"]').val(1);
+            }
+        }
+
+        $('#aio_shipping_save').click(function() {
+            validation_passed = false;
+            
+            if ($('input[name="order[shipping_method]"]:checked').length) {
+                validation_passed = true;
+                if ($('input[name="order[shipping_method]"]:checked').val().indexOf('vconnect_postnord_') != -1) {
+                    if ($('input[name="order[shipping_method]"]:checked').val().indexOf('pickup') != -1) {
+                        $('input[name=vconnect_postnord_data]').addClass('required-entry');
+                        if ($('input[name=vconnect_postnord_data]').val() == '') {
+                            validation_passed = false;
+                        }
+                    } else {
+                        $('input[name=vconnect_postnord_data]').removeClass('required-entry');
+                    }
+                }
+            }
+
+            if (validation_passed) {
+                $('input[name="order[has_shipping]"]').val(1);
+            } else {
+                $('input[name="order[has_shipping]"]').val('');
+            }
+
+            if ($('input[name="order[shipping_method]"]:checked').length != 0 && $('input[name="order[shipping_method]"]:checked').val()) {
+                if ($('input[name="order[shipping_method]"]:checked').val().indexOf('vconnect_postnord_') != -1) {
+                    if ($('input[name="order[shipping_method]"]:checked').val().indexOf('pickup') == -1) {
+                        var flexDeliveries = <?php echo json_encode($deliveries)?>;
+                        var desc = '';
+                        var arrival = $('select[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_arrival"]');
+                        if(arrival.length){
+                            desc += ('' + arrival.val()); 
+                        }
+                        var flexDelivery = false;
+                        var delivery = $('select[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_delivery"]');
+                        if(delivery.length){
+                            desc += (' / ' + delivery.val());
+                            if($.inArray(delivery,flexDeliveries)){
+                                flexDelivery = (delivery.val() == "<?php echo Mage::helper('vc_aio')->__('Other place'); ?>" || delivery.val() == 'Utan kvittens (paketet ställs utanför dörren)')?$('textarea[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_other"]',closest).val():delivery.val();
+                            }
+                            if(delivery.val() == "<?php echo Mage::helper('vc_aio')->__('Other place'); ?>" || delivery.val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+                                var closest = delivery.closest('.aino-inner-tabs');
+                                var otherText =  $('textarea[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_other"]').val();
+                                var escaped = $('<div/>').text(otherText).html();
+                                desc += (" - " + escaped);
+                            }
+                        }
+
+                        var obj = {
+                            code            : $('input[name="order[shipping_method]"]:checked').val(),
+                            arrival         : $('select[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_arrival"]').length?$('select[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_arrival"]').val():false,
+                            delivery        : $('select[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_delivery"]').length?$('select[name="'+$('input[name="order[shipping_method]"]:checked').val()+'_delivery"]').val():false,
+                            flexdelivery    : flexDelivery,
+                            carrier         : '<?php echo $this->escapeHtml(Mage::getStoreConfig('carriers/vconnect_postnord/title'))?>',
+                            description     : desc
+                        };
+
+                        obj.environmental_fee = 0;
+                        if ($('[name="vconnect_postnord_environmental_fee"]:checked').length != 0) {
+                            obj.environmental_fee = 1;
+                        }
+
+                        $('input[name=payment_ain_vconnect_postnord_data]').val(JSON.stringify(obj));
+                    } else if ($('input[name=payment_ain_vconnect_postnord_data]').length != 0 && $('input[name=payment_ain_vconnect_postnord_data]').val()) {
+                        obj = JSON.parse($('input[name=payment_ain_vconnect_postnord_data]').val());
+
+                        obj.environmental_fee = 0;
+                        if ($('[name="vconnect_postnord_environmental_fee"]:checked').length != 0) {
+                            obj.environmental_fee = 1;
+                        }
+
+                        $('input[name=payment_ain_vconnect_postnord_data]').val(JSON.stringify(obj));
+                    }
+               }
+
+                order.setShippingMethod($('input[name="order[shipping_method]"]:checked').val());
+            }
+        });
+    });
+
+    AdminOrder.addMethods({
+        setShippingMethod: function(method) {
+            var data = {};
+            data['order[shipping_method]'] = method;
+            data['payment_ain_vconnect_postnord_data'] = $('payment_ain_vconnect_postnord_data').getValue();
+
+            this.loadArea(['totals', 'billing_method'], true, data);
+        }
+    });
+</script>

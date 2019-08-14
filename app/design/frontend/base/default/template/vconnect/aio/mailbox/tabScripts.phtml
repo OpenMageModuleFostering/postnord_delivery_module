@@ -1,0 +1,152 @@
+<?php
+/*
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/mailbox/tabScripts.phtml
+ */
+$deliveries = Mage::helper('vc_aio')->getFelxDeliveryByMethodCode($this->getCode());
+?>
+
+<script>
+    window.pointsEndpoint = "<?php echo $this->getUrl('aio/index/index', array('_secure' => true))?>";
+
+    jQuery(function($){
+        var shipContryVal = $('select[name="shipping[country_id]"]:last').val();
+        var shipPostcodeVal = $('input[name="shipping[postcode]"]:last').val();
+        var shipStreetVal = $('input[name="shipping[street][]"]:first').val();
+        var billContryVal = $('select[name="billing[country_id]"]:last').val();
+        var billPostcodeVal = $('input[name="billing[postcode]"]:last').val();
+        var billStreetVal = $('input[name="billing[street][]"]:first').val();
+
+        if (($('#onestepcheckout-form').length > 0 || $('.opc-wrapper-opc').length > 0) && $('input[name="billing[use_for_shipping]"]').length > 0 && $('input[name="billing[use_for_shipping]"]').is(':checked')) {
+           shipContryVal = '';
+           shipPostcodeVal = '';
+           shipStreetVal = '';
+        }
+
+        var country_id  = (shipContryVal !== '')?shipContryVal:billContryVal;
+        var postcode  = (shipPostcodeVal !== '')?shipPostcodeVal:billPostcodeVal;
+        var street  = (shipStreetVal !== '')?shipStreetVal:billStreetVal;
+
+        var html_nearest_point = '';
+
+        if ($('.nearest_point_container').length > 0) {
+            getPickupPoints(country_id,postcode,street,function (points) {
+                var nearest_point_monFriOpen = (typeof points[0].openingHours !== 'undefined')
+                    ?points[0].openingHours[0].from1.insertString(2, 0, ":"):'';
+                var nearest_point_monFriClose = (typeof points[0].openingHours !== 'undefined')
+                    ?points[0].openingHours[0].to1.insertString(2, 0, ":"):'';
+                var nearest_point_satOpen = (typeof points[0].openingHours !== 'undefined')
+                    ?points[0].openingHours[points[0].openingHours.length-1].from1.insertString(2, 0, ":"):'';
+                var nearest_point_satClose = (typeof points[0].openingHours !== 'undefined')
+                    ?points[0].openingHours[points[0].openingHours.length-1].to1.insertString(2, 0, ":"):'';
+
+                html_nearest_point = '<div class="aino-nearest-data">';
+                html_nearest_point += '<div class="aino-nearest-name">' +points[0].name + '</div>';
+                html_nearest_point += '<div class="aino-nearest-address">' + points[0].deliveryAddress.streetName + ', ' + points[0].deliveryAddress.streetNumber + '</div>';
+                html_nearest_point += '<div class="aino-work-hours">' +
+                        '<?php echo $this->__('Mon'); ?>-<?php echo $this->__('Fri'); ?>: '+nearest_point_monFriOpen +' - '+ nearest_point_monFriClose +'<br/>' +
+                        '<?php echo $this->__('Sat'); ?>: '+nearest_point_satOpen +' - '+ nearest_point_satClose +
+                        '</div>';
+                html_nearest_point += '</div>';
+                $('.nearest_point_container').show().find('.vc-value').html(html_nearest_point);
+            });
+        }
+
+        function getPickupPoints(country_id,postcode,street,callback)
+        {
+
+
+
+            var dataToSend = {
+                country_id  : country_id,
+                postcode    : postcode
+            };
+            if(street){
+                dataToSend.street = street;
+            }
+            $.ajax({
+                url     : pointsEndpoint,
+                data    : dataToSend
+            }).done(function (data) {
+
+                if( typeof data.postnord.servicePointInformationResponse === 'undefined')
+                {
+                    if( typeof data.postnord.message !== 'undefined'){
+                        console.error(data.postnord.message);
+                    }
+                    return console.log('Pickup api\'s return unknown error');
+                }
+                var points = data.postnord.servicePointInformationResponse.servicePoints;
+
+                if(callback) {
+                    callback(points);
+                }
+            });
+        }
+        $('.all-in-one-container').on('submit_before_<?php echo $this->getCode()?>',function(){
+            var flexDeliveries = <?php echo json_encode($deliveries)?>;
+            var desc = '';
+            var arrival = $('[data-code=<?php echo $this->getCode()?>] input[name=arrival][checked]');
+            if(arrival.length){
+                desc += ('' + arrival.val()); 
+            }
+            var flexDelivery = false;
+            var delivery = $('[data-code=<?php echo $this->getCode()?>] input[name=delivery][checked]');
+            if(delivery.length){
+                desc += (' / ' + delivery.val());
+                if($.inArray(delivery,flexDeliveries)){
+                    flexDelivery = (delivery.val() == "<?php echo Mage::helper('vc_aio')->__('Other place'); ?>" || delivery.val() == 'Utan kvittens (paketet ställs utanför dörren)')?$('textarea[name=other]',closest).val():delivery.val();
+                }
+                if(delivery.val() == "<?php echo Mage::helper('vc_aio')->__('Other place'); ?>" || delivery.val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+                    var closest = delivery.closest('.aino-inner-tabs');
+                    var otherText =  $('textarea[name=other]',closest).val();
+                    var escaped = $('<div/>').text(otherText).html();
+                    desc += (" - " + escaped);
+                }
+            }
+            
+            
+            var obj = {
+                code            : '<?php echo $this->getCode()?>',
+                arrival         : arrival.length?arrival.val():false,
+                delivery        : delivery.length?delivery.val():false,
+                flexdelivery    : flexDelivery,
+                carrier         : '<?php echo $this->escapeHtml($this->getCarrierTitle())?>',
+                description     : desc,
+                pointinfo       : arrival.length?'<b><?php echo $this->__("We will arrive in") ?>:</b><br />' + arrival.parent().find('.label-text').text() + (html_nearest_point !== ''?(' <br /> <?php echo $this->__('Delivery types') ?><br />' + html_nearest_point):''):'',
+            };
+            $('.aino-deliver-to li.ui-state-active').data('shipping',obj);
+        });
+        
+    });
+    
+    
+</script>
+
+
+
+

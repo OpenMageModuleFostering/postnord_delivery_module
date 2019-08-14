@@ -1,0 +1,159 @@
+<?php
+/*
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/private/tabScripts.phtml
+ */
+ 
+$deliveries = Mage::helper('vc_aio')->getFelxDeliveryByMethodCode($this->getCode());
+
+$config = $this->getConfig();
+$additional_fee = Mage::helper('vc_aio')->getAdditionalFeeData($config['system_path']);
+?>
+
+<?php if ($additional_fee): ?>
+<script>
+    window.transitInformation = "<?php echo $this->getUrl('aio/index/transitInformation', array('_secure' => true))?>";
+</script>
+<?php endif; ?>
+
+<script>
+    
+    jQuery(function($){
+        $('.aino-weather').show();
+        
+        $('.all-in-one-container').on('submit_before_<?php echo $this->getCode()?>',function(){
+            var flexDeliveries = <?php echo json_encode($deliveries)?>;
+            var desc = '';
+            pointinfo = '';
+
+            <?php if(!empty($config['delivery_time'])): ?>
+             pointinfo += '<b><?php echo $this->__("Label arrival time private:") ?></b><br /><?php echo $config['delivery_time']; ?> <br />';
+            <?php endif;?>
+
+            var arrival = $('[data-code=<?php echo $this->getCode()?>] input[name=arrival][checked]');
+            if(arrival.length){
+                desc += ('' + arrival.val()); 
+                pointinfo += ('<b><?php echo $this->__("Label arrival private:") ?></b><br />' + arrival.parent().find('.label-text').text() + '<br/>'); 
+            }
+            
+            var flexDelivery = false;
+            var delivery = $('[data-code=<?php echo $this->getCode()?>] input[name=delivery][checked]');
+            if(delivery.length){
+                desc += (' / ' + delivery.val());
+                pointinfo += ('<b><?php echo $this->__("Label delivery private:") ?></b><br />' + delivery.parent().find('.label-text').text() + '<br/>'); 
+                if($.inArray(delivery,flexDeliveries)){
+                    flexDelivery = (delivery.val() == "<?php echo Mage::helper('vc_aio')->__('Other place'); ?>" || delivery.val() == 'Utan kvittens (paketet ställs utanför dörren)')?$('textarea[name=other]',closest).val():delivery.val();
+                }
+                if(delivery.val() == "<?php echo Mage::helper('vc_aio')->__('Other place'); ?>" || delivery.val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+                    var closest = delivery.closest('.aino-inner-tabs');
+                    var otherText =  $('textarea[name=other]',closest).val();
+                    var escaped = $('<div/>').text(otherText).html();
+                    desc += (" - " + escaped);
+                    pointinfo += (" - " + escaped);
+                }
+            }
+
+
+
+            var obj = {
+                code            : '<?php echo $this->getCode()?>',
+                arrival         : arrival.length?arrival.val():false,
+                delivery        : delivery.length?delivery.val():false,
+                flexdelivery    : flexDelivery,
+                carrier         : '<?php echo $this->escapeHtml($this->getCarrierTitle())?>',
+                description     : desc,
+                pointinfo       : pointinfo
+            };
+            $('.aino-deliver-to li.ui-state-active').data('shipping',obj);
+        });
+
+        var shipContryVal = $('select[name="shipping[country_id]"]:last').val();
+        var shipPostcodeVal = $('input[name="shipping[postcode]"]:last').val();
+        var billContryVal = $('select[name="billing[country_id]"]:last').val();
+        var billPostcodeVal = $('input[name="billing[postcode]"]:last').val();
+        
+        if (($('#onestepcheckout-form').length > 0 || $('.opc-wrapper-opc').length > 0) && $('input[name="billing[use_for_shipping]"]').length > 0 && $('input[name="billing[use_for_shipping]"]').is(':checked')) {
+           shipContryVal = '';
+           shipPostcodeVal = '';
+        }
+
+        var country_id  = (shipContryVal !== '')?shipContryVal:billContryVal;
+        var postcode  = (shipPostcodeVal !== '')?shipPostcodeVal:billPostcodeVal;
+
+        <?php if ($additional_fee): ?>
+        if (country_id && postcode && $('[data-code=<?php echo $this->getCode()?>] .aino-arrival .aino-nav').length != 0) {
+            getTransitInformation(country_id, postcode);
+        }
+
+        function getTransitInformation(country_id, postcode)
+        {
+            console.log('getTransitInformation called');
+
+            var dataToSend = {
+                country_id   : country_id,
+                postcode     : postcode,
+                service_code : 32
+            };
+
+            var eveningDelivery = false;
+
+            $.ajax({
+                url     : transitInformation,
+                data    : dataToSend
+            }).done(function (data) {
+                if (!data || !data.postnord) {
+                    return;
+                }
+
+                if (data.postnord.error) {
+                    console.log(data.postnord.message);
+                } else {
+                    if(typeof data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'] !== 'undefined' && typeof data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'].transitTimes !== 'undefined' && typeof data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'].transitTimes[0] !== 'undefined' && typeof data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'].transitTimes[0].deliveryTime !== 'undefined' && typeof data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'].transitTimes[0].transitTimeInDays !== 'undefined')
+                    {
+                        if (data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'].transitTimes[0].transitTimeInDays == 1 && data.postnord['se.posten.loab.lisp.notis.publicapi.serviceapi.TransitTimeResponse'].transitTimes[0].deliveryTime == '21:00') {
+                            eveningDelivery = true;
+                        }
+                    }
+
+                    if (eveningDelivery) {
+                        $('#<?php echo $this->getCode() ?>_additional_fee_element').show();
+                    } else {
+                        $('#<?php echo $this->getCode() ?>_additional_fee_element').hide();
+                    }
+                }
+            });
+        }
+        <?php endif; ?>
+
+    });
+    
+    
+</script>
+
+
+
+

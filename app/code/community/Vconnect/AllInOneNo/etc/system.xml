@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config>
+    <sections>                      <!-- system config section -->
+        <carriers>
+            <groups>
+                <vconnect_postnord_business>
+                    <fields>
+                    </fields>
+                </vconnect_postnord_business>
+                
+                <vconnect_postnord_home>
+                    <fields>
+                    </fields>
+                </vconnect_postnord_home>
+                <vconnect_postnord_pickup>
+                    <fields>
+                    </fields>
+                </vconnect_postnord_pickup>
+            </groups>
+        </carriers>
+    </sections>
+</config>

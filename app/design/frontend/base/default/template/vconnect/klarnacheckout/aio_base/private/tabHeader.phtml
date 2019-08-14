@@ -1,0 +1,100 @@
+<?php
+/*
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio_base/dk/home/tabHeader.phtml
+ */
+?>
+
+<?php
+$config = $this->getConfig();
+$additional_fee = Mage::helper('vc_aio')->getAdditionalFeeData($config['system_path']);
+
+$vconnectPostnordSessionData = array();
+if (Mage::getSingleton('checkout/session')->hasVconnectPostnordSessionData()) {
+    $vconnectPostnordSessionData = Mage::getSingleton('checkout/session')->getVconnectPostnordSessionData();
+}
+
+$arrival_default = '';
+if (!empty($vconnectPostnordSessionData['code']) && !empty($vconnectPostnordSessionData['arrival']) && $vconnectPostnordSessionData['code'] == $this->getCode()) {
+    $arrival_default = $vconnectPostnordSessionData['arrival'];
+}
+
+$delivery_default = '';
+if (!empty($vconnectPostnordSessionData['code']) && !empty($vconnectPostnordSessionData['delivery']) && $vconnectPostnordSessionData['code'] == $this->getCode()) {
+    $delivery_default = $vconnectPostnordSessionData['delivery'];
+}
+
+$other_default = '';
+if (!empty($vconnectPostnordSessionData['code']) && !empty($vconnectPostnordSessionData['other']) && $vconnectPostnordSessionData['code'] == $this->getCode()) {
+    $other_default = $vconnectPostnordSessionData['other'];
+}
+?>
+
+<div data-code="<?php echo $this->getCode() ?>" class="aio-options">
+    <?php if(!empty($config['delivery_time'])): ?>
+    <label for="<?php echo $this->getCode() ?>_deliverytime"><?php echo $this->__("Label arrival time private:") ?></label><br /><?php echo $config['delivery_time']; ?><br />
+    <?php endif;?>
+
+    <?php $count_arrival = count($config['arrival']) + ($additional_fee ? 1 : 0); ?>
+    <?php if ($count_arrival): ?>
+    <label for="<?php echo $this->getCode() ?>_arrival"><?php echo $this->__('Label arrival private:') ?></label>
+    <select style="<?php if ($count_arrival == 1): ?> display: none; <?php endif; ?>" id="<?php echo $this->getCode() ?>_arrival" name="<?php echo $this->getCode() ?>_arrival">
+        <?php foreach ($config['arrival'] as $value => $label) : ?>
+            <option value="<?php echo $value ?>" <?php if ($arrival_default == $value) { ?> selected="selected" <?php } ?>><?php echo $this->__($label) ?></option> 
+        <?php endforeach; ?>
+        <?php if ($additional_fee): ?>
+            <option style="display: none;" id="<?php echo $this->getCode() ?>_additional_fee_element" value="<?php echo $additional_fee['label_with_price'] ?>" <?php if ($arrival_default == $additional_fee['label_with_price']) { ?> selected="selected" <?php } ?>><?php echo $additional_fee['label_with_price'] ?></option> 
+        <?php endif; ?>
+    </select>
+    <?php if ($count_arrival == 1 && isset($label)): ?>
+    <span><?php echo $this->__($label) ?></span><br/>
+    <?php endif; ?>
+    <?php endif; ?>
+
+    <?php $count_delivery = count($config['delivery']); ?>
+    <?php if ($count_delivery): ?>
+    <label for="<?php echo $this->getCode() ?>_delivery"><?php echo $this->__('Delivery type') ?></label>
+    <select style="<?php if ($count_delivery == 1): ?> display: none; <?php endif; ?>" id="<?php echo $this->getCode() ?>_delivery" name="<?php echo $this->getCode() ?>_delivery">
+        <?php foreach ($config['delivery'] as $value => $label) : ?>
+            <?php if (is_array($label)): ?>
+                <optgroup label="<?php echo  $value?>">            
+                    <?php foreach ($label as $j=>$k): ?>
+                        <option value="<?php echo is_int($j)?$k:$j ?>" <?php if ($delivery_default == (is_int($j)?$k:$j)) { ?> selected="selected" <?php } ?>><?php echo $this->__($k) ?></option>
+                    <?php endforeach; ?>
+                 </optgroup>           
+            <?php else: ?>
+               <option value="<?php echo $this->__($value); ?>" <?php if ($delivery_default == $this->__($value)) { ?> selected="selected" <?php } ?>><?php echo $this->__($label) ?></option> 
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </select>
+    <?php if ($count_delivery == 1 && isset($label)): ?>
+    <span><?php echo $this->__($label) ?></span>
+    <?php endif; ?>
+    <br/>
+    <textarea name="<?php echo $this->getCode() ?>_other" class="other-txt" placeholder="<?php echo $this->__('Write place') ?>"><?php echo $other_default; ?></textarea>
+    <?php endif; ?>
+</div>

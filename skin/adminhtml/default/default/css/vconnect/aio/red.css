@@ -1,0 +1,2407 @@
+/*reset*/
+.all-in-one-container {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 16px; /*+*/
+    vertical-align: baseline;
+
+}
+
+.all-in-one-container table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/*reset*/
+
+/*clearfix*/
+.cf:before,
+.cf:after {
+    content: "";
+    display: table;
+}
+
+.cf:after {
+    clear: both;
+}
+
+.cf {
+    zoom: 1; /* For IE 6/7 (trigger hasLayout) */
+}
+
+/*clearfix*/
+@font-face {
+    font-family: 'Stag Sans Round - Medium';
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Medium.otf');
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Medium.otf?#iefix') format('embedded-opentype'), url('../../../fonts/vconnect/aio/Stag Sans Round - Medium.otf') format('woff2'), url('../../../fonts/vconnect/aio/Stag Sans Round - Medium.otf') format('woff'), url('../../../fonts/vconnect/aio/Stag Sans Round - Medium.otf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Stag Sans Round - Book';
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Book.otf');
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Book.otf?#iefix') format('embedded-opentype'), url('../../../fonts/vconnect/aio/Stag Sans Round - Book.otf') format('woff2'), url('../../../fonts/vconnect/aio/Stag Sans Round - Book.otf') format('woff'), url('../../../fonts/vconnect/aio/Stag Sans Round - Book.otf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Stag Sans Round - Light';
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Light.otf');
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Light.otf?#iefix') format('embedded-opentype'), url('../../../fonts/vconnect/aio/Stag Sans Round - Light.otf') format('woff2'), url('../../../fonts/vconnect/aio/Stag Sans Round - Light.otf') format('woff'), url('../../../fonts/vconnect/aio/Stag Sans Round - Light.otf') format('truetype');
+}
+
+@font-face {
+    font-family: 'Stag Sans Round - Semibold';
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Semibold.otf');
+    src: url('../../../fonts/vconnect/aio/Stag Sans Round - Semibold.otf?#iefix') format('embedded-opentype'), url('../../../fonts/vconnect/aio/Stag Sans Round - Semibold.otf') format('woff2'), url('../../../fonts/vconnect/aio/Stag Sans Round - Semibold.otf') format('woff'), url('../../../fonts/vconnect/aio/Stag Sans Round - Semibold.otf') format('truetype');
+}
+
+/*checkbox*/
+.aino-container .aino-input {
+    position: relative;
+    cursor: pointer;
+    display: block !important;
+    padding: 15px 15px 15px 60px;
+    border-bottom: 2px solid #f3f3f3;
+    margin-bottom: 0;
+}
+
+.aino-container .aino-input > input {
+    position: absolute;
+    z-index: -1;
+    opacity: 0;
+    display: none;
+}
+
+.aino-container .aino-indicator {
+    position: absolute;
+    top: 13px;
+    left: 10px;
+    display: block;
+    line-height: 1rem;
+    user-select: none;
+    width: 20px;
+    height: 16px;
+}
+
+.aino-container .aino-input > input:checked ~ .aino-indicator,
+.aino-container .aino-input > input[checked] ~ .aino-indicator{
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat 0 -108px;
+}
+
+.page-navigation li a:hover{
+    background-color: #cc0000;
+}
+
+.aino-cover {
+    width: 100%;
+    height: 100%;
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0, 0, 0, 0.7);
+    z-index: 1060;
+}
+
+.aino-container {
+    width: 100%;
+    position: fixed;
+    top: 10%;
+    bottom: 10%;
+    z-index: 9999999999;
+    outline: 0;
+}
+.aino-container .aino-core{
+    background-color: #fff;
+    font-family: 'Stag Sans Round - Medium';
+    margin: 0 auto;
+    border: 1px solid #000;
+    font-size: 16px;
+    text-align: left;
+}
+
+.aino-container *{
+    box-sizing: border-box;
+}
+
+.aino-container.desktop .aino-core{
+    width: 1155px;
+    height: 100%;
+    padding: 23px 16px 0;
+    color: #000;
+}
+
+.aino-container.mobile .aino-core{
+    width: 100%;
+    height:100%;
+}
+
+.aino-container .aino-header .postnord-logo {
+    width: 22%;
+    float: left;
+    text-align: center;
+    margin-bottom: 13px;
+    margin-top: 0 !important;
+}
+
+.aino-container .aino-header .postnord-logo span {
+    /*background: url(../images/PostDKLogo.svg.png) no-repeat;*/
+    background: url(../../../images/vconnect/aio/PostDKLogo.svg.png) no-repeat;
+    background-size: 100%;
+    display: inline-block;
+    width: 166px;
+    height: 48px;
+    margin: 5px;
+    outline: none;
+    overflow: hidden;
+    text-indent: -999px;
+    white-space: nowrap;
+    z-index: 2;
+}
+
+.aino-container .aino-nav {
+    list-style-type: none;
+    padding: 0;
+}
+
+.aino-container .aino-inner-tabs > .aino-nav
+{
+    position: relative;
+    margin-top: 16px;
+}
+
+.aino-container > .aino-core > .aino-tabs,
+.aino-container .aino-inner-tabs
+{
+    height: 84%;
+}
+
+.aino-deliver-to {
+    width: 100%;
+    position: relative;
+}
+
+.aino-deliver-to > li > a {
+    background-color: #fafafa;
+    color: #cc0000;
+    display: block;
+    padding: 16px 26px;
+    text-decoration: none;
+    line-height: 20px;
+    box-shadow: 3px 3px 0 #e5e5e5;
+    margin-bottom: 20px;
+    margin-right: 30px;
+    width: 22.5%;
+}
+
+.aino-deliver-to > li > a:before {
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat;
+    display: inline-block;
+    margin-right: 28px;
+    vertical-align: middle;
+}
+
+.aino-deliver-to > li > .tab-list{
+    position: absolute;
+    width: 74%;
+    top: 0;
+    left: 25%;
+}
+
+.aino-deliver-to .aino-mailbox-tab > a:before {
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") -1px -273px;
+    width: 20px;
+    height: 14px;
+}
+
+.aino-deliver-to .aino-mailbox-tab > a:hover:before,
+.aino-deliver-to .aino-mailbox-tab.ui-state-active > a:before {
+    background-position: -23px -273px;
+}
+
+.aino-deliver-to .aino-address-tab > a:before {
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") -23px 0;
+    width: 20px;
+    height: 18px;
+}
+
+.aino-deliver-to .aino-address-tab > a:hover:before,
+.aino-deliver-to .aino-address-tab.ui-state-active > a:before {
+    background-position: 0 0;
+}
+
+.aino-deliver-to .aino-office-tab > a:before {
+    background-position: -23px -23px;
+    width: 20px;
+    height: 21px;
+}
+
+.aino-deliver-to > li > a span{
+    display: inline-block;
+    vertical-align: middle;
+    line-height: 20px;
+}
+.aino-deliver-to .aino-international-tab > a:before {
+    background-position: -2px -250px;
+    width: 21px;
+    height: 21px;
+}
+
+.aino-deliver-to .aino-international-tab.ui-state-active > a:before,
+.aino-deliver-to .aino-international-tab:hover > a:before{
+    background-position: -23px -249px;
+}
+
+.aino-deliver-to .aino-office-tab.ui-state-active > a:before,
+.aino-deliver-to .aino-office-tab > a:hover:before {
+    background-position: 0 -23px;
+}
+
+.aino-deliver-to .aino-business-tab > a:before {
+    background-position: -23px -44px;
+    width: 20px;
+    height: 21px;
+}
+
+.aino-deliver-to .aino-business-tab.ui-state-active > a:before,
+.aino-deliver-to .aino-business-tab > a:hover:before {
+    background-position: 0 -44px;
+}
+
+
+.aino-tabs-body .aino-smart-delivery .toggle-calendar{
+    text-align: left;
+}
+
+.aino-tabs-body .aino-smart-delivery .mounth-day{
+    display: none;
+}
+
+.aino-deliver-to .aino-smartdelivery-tab > a:before {
+    background-position: 0 -358px;
+    width: 20px;
+    height: 20px;
+}
+
+.aino-deliver-to .aino-smartdelivery-tab.ui-state-active > a:before,
+.aino-deliver-to .aino-smartdelivery-tab > a:hover:before {
+    background-position: -22px -358px;
+}
+
+.aino-deliver-to .ui-state-active{
+    border:none !important;
+    background: none !important;
+    font-weight: normal;
+    color: inherit;
+}
+
+.aino-deliver-to > li > a .aino-delivery-price{
+    line-height: 20px;
+}
+
+.aino-deliver-to > .ui-state-active > a,
+.aino-deliver-to > li > a:hover,
+.aino-deliver-to > li > a:hover .aino-delivery-price,
+.aino-deliver-to > .ui-state-active > a .aino-delivery-price {
+    background-color: #cc0000;
+    color: #fff;
+    transition: none;
+}
+
+.aino-deliver-to > li > a i{
+    font-style: italic;
+}
+
+.aino-container li:focus,
+.aino-container li a:focus,
+.aino-container li button:focus {
+    outline: none;
+}
+
+.aino-container .aino-tabs-body {
+    width: 75%;
+}
+.aino-container .aino-tabs-body .aino-tabs-body {
+    margin-top: 16px;
+}
+
+.aino-container .aino-tabs-body .tab-list:not(:first-child){
+    display: none;
+}
+
+.aino-container .aino-tabs-body .tab-list{
+    width: 80%;
+    position: absolute;
+}
+
+.aino-container .aino-tabs-body,
+.aino-container .aino-nav {
+    float: left;
+    margin-top: 0;
+    margin-bottom:0;
+}
+
+.aino-container .aino-tabs-body .aino-heading {
+    color: #a29a9b;
+}
+
+.aino-container .aino-tabs-body {
+    font-family: 'Stag Sans Round - Book'!important;
+}
+
+.aino-container .aino-tabs-body .aino-tabs,
+.aino-container .aino-inner-tabs{
+    border-top: 2px solid #f6f6f6;
+}
+
+.aino-container .aino-inner-tabs > ul > li > div.active:before{
+    content: '';
+    border-top: 4px solid #cc0000;
+    display: block;
+    margin-top: -19px;
+    margin-bottom: 15px;
+}
+
+.aino-container .aino-column > .aino-tabs > ul > li ,
+.aino-container .aino-inner-tabs > ul > li{
+    margin-bottom: 19px;
+}
+.aino-container .aino-tabs-body .aino-inner-tabs p,
+.aino-container .aino-tabs-body > div{
+    line-height: 19px;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs [role=tab]{
+    text-decoration: none;
+    color: #000;
+    font-size: 20px!important;
+    display: block;
+    border-bottom: 2px solid #f6f6f6;
+    margin: 18px 0 16px;
+    font-family: 'Stag Sans Round - Medium'!important;
+    position: relative;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs [role=tab] label{
+    cursor: pointer;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs [role=tab]:after {
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat 0 -67px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 10px;
+    height: 16px;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs li [role=tab] span {
+    padding: 13px 30px 13px 0;
+    display: block;
+    line-height: 19px;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs li.active [role=tab] span{
+    background-color: #cc0000;
+    color: #fff;
+    margin-left: -14px;
+    padding: 13px 30px 13px 14px;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs li.active [role=tab]:after{
+    background-position: -14px -67px;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs .delivery-context{
+    float: left;
+    width: 43%;
+}
+
+.aino-container .aino-column-2{
+    display: none;
+    width: 50%;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+
+.aino-container .aino-column-2 ul {
+    width: 100%;
+    position: relative;
+    z-index: 3;
+}
+
+.aino-container .aino-column-2 ul li {
+    padding: 0 23px;
+}
+
+.aino-container .aino-column-2 ul li.aino-active {
+    background-color: #f8f8f8;
+}
+
+.aino-container .aino-column-2 > div {
+    padding: 11px 24px 23px;
+    border-bottom: 2px solid #efefef;
+}
+
+.aino-container .aino-column-2 > div .close,
+.aino-container .aino-column-2 > div .close-inner{
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat 0 -88px;
+    width: 20px;
+    height: 20px;
+    display: inline-block;
+    float: right;
+    cursor: pointer;
+     opacity: 1;
+}
+
+.aino-container .aino-column-2 .aino-input{
+    color: #000;
+}
+
+
+.aino-container .aino-textarea-holder{
+    padding-right: 23px;
+    display: none;
+}
+
+.aino-container textarea{
+    border:2px solid #e5e5e5;
+    outline: none;
+    padding: 10px;
+    width:100%;
+    font-family: 'Stag Sans Round - Light';
+    resize: none;
+}
+
+.aino-map-container {
+    width: 47%;
+    float: left;
+    position: relative;
+    margin-right: -15px;
+    margin-top: -73px;
+}
+
+.address-near-you {
+    width: 32%;
+    float: left;
+    height: 685px;
+    overflow: auto;
+    background-color: transparent;
+    padding-left: 15px;
+    margin-top: -73px;
+}
+
+.alt-scroll-holder, .alt-scroll-content{
+    width: 100% !important;
+}
+
+.address-near-you ul {
+    width: 100%;
+    padding-left: 15px;
+    margin-left: -15px;
+}
+
+.address-near-you ul > li {
+    background-color: #f8f8f8;
+    position: relative;
+    font-family: 'Roboto', sans-serif;
+    font-size: 12px;
+    border-bottom: 1px solid #fff;
+    cursor: pointer;
+}
+
+.address-near-you ul > li .aino-input{
+    border: none;
+}
+
+.address-near-you li.active {
+    margin-left: -17px;
+    margin-top: -1px;
+    padding: 0 0 0 17px;
+}
+
+.address-near-you li.active > div{
+    border-bottom: 4px solid #dfdfdf;
+    margin-bottom: -5px;
+    z-index: 10;
+    position: relative;
+}
+
+.address-near-you li:hover .aino-index,
+.address-near-you li:hover .aino-title{
+    color: #B51422 !important;
+    font-weight:800;
+}
+
+.address-near-you li:hover .aino-address{
+    font-family:'Stag Sans Round - book';
+    color: #B51422 !important;
+}
+
+.address-near-you li.active .aino-distance {
+    left: 0;
+    height: 95%;
+}
+
+.address-near-you li.active .aino-index {
+    color: #cc0000;
+}
+
+.address-near-you li.active,
+.address-near-you li.active .aino-distance {
+    background-color: #fff;
+}
+
+.address-near-you .aino-distance {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 100%;
+    width: 60px;
+    text-align: center;
+    letter-spacing: 0.5px;
+    background-color: #ebebeb;
+    color: #000;
+}
+
+.address-near-you .aino-distance span {
+    display: block;
+    font-size: 20px;
+    position: relative;
+    top: 25%;
+}
+
+.address-near-you .aino-title {
+    color: #cc0000;
+    text-transform: uppercase;
+}
+
+.address-near-you .aino-title,
+.address-near-you .aino-address,
+.address-near-you .aino-rating{
+    float: right;
+    width: 80%;
+}
+
+
+.address-near-you .aino-index {
+    font-size: 18px;
+    float: left;
+    margin-top:-4px;
+    text-align: right;
+    margin-left: 9px;
+}
+
+.address-near-you .aino-address {
+    font-family: 'Stag Sans Round - Light';
+    line-height: 17px;
+}
+
+.aino-rating {
+    padding: 9px 0;
+}
+
+.aino-rating .aino-star.active {
+    background-position: -1px -126px;
+}
+
+.aino-rating .aino-star {
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat;
+    background-position: -20px -126px;
+    width: 13px;
+    height: 13px;
+    display: inline-block;
+    margin-right: 3px;
+}
+
+.aino-footer > div {
+    float: right;
+    margin-right: 10px;
+}
+
+.aino-footer .aino-button {
+    width: 280px;
+    border: none;
+    text-transform: uppercase;
+    color: #fff;
+    padding: 12px;
+    font-weight: bold;
+    font-family: 'Roboto', sans-serif;
+    cursor: pointer;
+    outline: none;
+}
+
+.aino-footer .aino-button.blue {
+    background-color: #cc0000;
+}
+
+.aino-footer .aino-button.gray {
+    background-color: #878787;
+}
+
+.aino-label {
+    color: #cc0000;
+    background-color: #fff;
+    position: relative;
+    z-index: -1;
+    text-align: center;
+    padding-top: 10px;
+    background: url(../../../images/vconnect/aio/not-active-pin-red.png) no-repeat 0 0;
+    width: 27px;
+    height: 35px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.aino-label.active {
+    background: url(../../../images/vconnect/aio/active-pin-red-3.png) no-repeat 0 0;
+    color: #fff;
+    text-shadow: 1px 1px #000;
+}
+
+.aino-weather {
+    margin-top: 16px;
+}
+
+.weather-temp-day sup {
+    display: inline-block;
+    vertical-align: super;
+    font-size: 60%;
+}
+
+.aino-weather .aino-nav {
+    margin-left: 5%;
+    width: 72%;
+}
+
+.aino-weather .aino-nav li{
+    width: 20%;
+    float: left;
+}
+
+.aino-weather .aino-nav li > div {
+    float: left;
+    font-family: 'Roboto', sans-serif;
+    font-size: 20px;
+    cursor: default;
+}
+
+.aino-weather .aino-nav li .weather-temp-day span {
+    display: block;
+}
+
+.aino-weather .aino-nav li .weather-icon {
+    margin-right: 12px;
+}
+
+.aino-weather .aino-nav li .aion-weather-day {
+    font-size: 12px;
+    text-transform: uppercase;
+    line-height: 20px;
+    margin-top: -9px;
+}
+
+.aino-weather .aino-nav li .aion-weather-temp {
+    letter-spacing: 1.2px;
+}
+
+.zipcode-holder{
+    position: absolute;
+    top: 10px;
+    right: 0px;
+    width:75%;
+    text-align: right;
+}
+
+.post-code-input, .directions-display-type{
+    float: right;
+    margin-right:15px;
+}
+
+.post-code-input {
+    padding: 5px 5px 5px 16px;
+    font-family: 'Roboto', sans-serif !important;
+    font-size: 12px !important;
+    font-weight: 500 !important;
+    text-transform: uppercase;
+    background-color: #fff;
+    color: #6e6e6e;
+}
+
+.post-code-input input {
+    width: 72px;
+    height: 26px;
+    border-radius: 4px;
+    border: 1px solid #dfdfdf;
+    color: #000;
+    text-align: center;
+    margin-left: 12px;
+    margin-right: 4px;
+    outline: none;
+}
+
+.post-code-input button {
+    background: none;
+    border: none;
+    padding: 5px 10px;
+}
+
+.post-code-input button span {
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -3px -140px;
+    width: 12px;
+    height: 10px;
+    display: block;
+}
+
+.aino-map-container .directions-display-type{
+    margin-top:5px;
+}
+
+.aino-map-container .directions-display-type > button{
+    padding: 5px;
+    background-color: #fff;
+    border: none;
+    border-radius: 1px;
+    box-shadow: 2px 2px 2px #e5e5e5;
+    margin: 0 1px;
+    outline: none;
+    cursor: pointer;
+}
+
+.aino-map-container .directions-display-type > button > span{
+    width: 16px;
+    height: 16px;
+    display: block;
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat;
+}
+
+.aino-map-container .aino-map-driving span{
+    background-position: -3px -287px !important;
+}
+
+.aino-map-container .aino-map-walking span{
+    background-position: -3px -304px !important;
+}
+
+.aino-map-container .aino-map-transit span{
+    background-position: -24px -287px !important;
+}
+
+.aino-map .aino-info-window {
+    font-family: 'Stag Sans Round - Book'!important;
+    margin: 0 -23px 0 0;
+    color:#000;
+}
+
+.aino-map .aino-info-window b,
+.aino-map .aino-info-window span {
+    font-family: 'Stag Sans Round - Semibold';
+    text-transform: uppercase;
+    font-size: 12px;
+    width: 60px;
+    display: inline-block;
+}
+
+.aino-map .aino-info-window span {
+    width: auto;
+    max-width: 95px;
+    margin-bottom: 20px;
+}
+
+.aino-map .aino-info-window img {
+    width: 61px;
+    height: 17px;
+    margin-bottom: -2px;
+    margin-left: 22px;
+    float: right;
+}
+
+.aino-map .gm-style-iw div {
+    overflow: visible !important;
+}
+
+.aino-map .gm-style > div:first-child > div:nth-child(4)
+    > div:nth-child(4) > div:first-child > div:first-child > div:last-child{
+    border: 2px solid #cc0000;
+}
+
+.aino-map .gm-style > div:first-child > div:nth-child(4)
+> div:nth-child(4) > div:first-child > div:first-child > div:not(:last-child) {
+    display: none;
+}
+
+.aino-map .gm-style .gm-style-iw {
+    overflow: visible;
+}
+
+.aino-map .gm-style-iw:before {
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -4px -175px;
+    width: 17px;
+    height: 18px;
+    position: absolute;
+    bottom: -17px;
+    left: 84px;
+    z-index: 9;
+}
+
+.aino-map .gm-style-iw + div {
+    top: -9px !important;
+    right: -13px !important;
+    width: 22px !important;
+    height: 22px !important;
+    opacity: 1 !important;
+}
+
+.aino-map .gm-style-iw + div:after {
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat 0 -152px;
+    display: block;
+    width: 22px;
+    height: 22px;
+}
+
+.aino-map .gm-style-iw + div img {
+    display: none;
+}
+
+/*mobile styles*/
+.aino-container.mobile{
+    display: none;
+    padding: 0;
+    font-family: 'Stag Sans Round - Book'!important;
+}
+
+.aino-container.mobile .aino-header{
+    text-align: center;
+    margin-top: 14px;
+}
+
+.aino-container.mobile .aino-header .postnord-logo{
+    width: auto;
+    float: none;
+}
+
+.aino-container.mobile .aino-footer > div{
+    float: none;
+    margin-right:0 !important;
+}
+
+.aino-container.mobile .aino-footer{
+    padding: 0 15px;
+}
+
+.aino-container.mobile .aino-footer .aino-button{
+    width: 49%;
+    display: block;
+    float: left;
+    padding: 11px;
+}
+
+.aino-container.mobile .aino-footer .aino-button.gray{
+    margin-right:2%;
+}
+
+.aino-container.mobile .aino-body{
+    margin-bottom: 14px;
+    height: 76%;
+    overflow: auto;
+}
+
+.aino-container.mobile .aino-body .aino-nav li a{
+    border-top: 2px solid #f3f3f3;
+    font-family: 'Stag Sans Round - Medium'!important;
+}
+
+.aino-container.mobile .aino-body .aino-nav li:last-child > a{
+    border-bottom: 2px solid #f3f3f3;
+}
+
+.aino-container.mobile .aino-body .aino-collapse{
+    color: #cc0000;
+    background-color: #f8f8f8;
+    display: block;
+    padding: 17px 14px;
+    cursor: pointer;
+    position: relative;
+}
+
+.aino-container.mobile .aino-body .aino-collapse-content{
+    padding: 14px 25px;
+}
+
+.aino-collapse-content{
+    display: none;
+}
+
+.aino-container.desktop .aino-collapse{
+    display: block;
+    padding: 15px 30px 15px 80px;
+    border-bottom: 2px solid #f3f3f3;
+    cursor: pointer;
+}
+
+.aino-container.desktop .aino-collapse:after{
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -3px -325px;
+    width: 9px;
+    height: 13px;
+    display: block;
+    float: right;
+    margin-right: -13px;
+}
+
+.aino-container.desktop .aino-collapse.active:after{
+    background-position: -18px -325px;
+    width: 14px;
+    margin-right: 19px;
+}
+
+.aino-container.mobile .aino-body .aino-collapse-content textarea{
+    display: none;
+    width:90%;
+    margin-bottom: 15px;
+}
+
+.aino-container.mobile .aino-body .aino-collapse:before{
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -2px -196px;
+    width: 9px;
+    height:13px;
+    display: block;
+    float: left;
+    margin-right: 25px;
+}
+
+.aino-container.mobile .aino-body .aino-collapse.active{
+    background-color: #cc0000;
+    color: #ffffff;
+}
+
+.aino-container.mobile .aino-body .aino-collapse.active:before{
+    background-position: -13px -196px;
+    width: 14px;
+    margin-right: 19px;
+}
+
+.aino-container.mobile .aino-body .aino-nav li .aino-collapse.active{
+    border-color: #cc0000;
+}
+
+.aino-container.mobile .aino-body .aino-nav li .aino-collapse.active div{
+    color: #fff;
+}
+
+.aino-container.mobile .aino-body .aino-collapse div{
+    float: right;
+    color: #434343;
+}
+
+.aino-container.mobile .aino-body .aino-collapse .mounth-day{
+    float: left;
+    margin-right: 10px;
+    color: #fff;
+}
+
+.aino-container.mobile .aino-weather{
+    margin-left: -25px;
+    margin-right: -25px;
+    background-color: #f7f7f7;
+    border-top: 1px solid #dadada;
+    border-bottom: 1px solid #dadada;
+    padding: 24px 0 18px;
+    margin-top: 0;
+    overflow: auto;
+}
+
+
+.aino-container.mobile .aino-collapse-content .aino-nav .aino-collapse{
+    background-color: #cc0000;
+    border-top: 1px solid #cc0000;
+    border-bottom: 1px solid #cc0000;
+    color: #ffffff;
+    margin: 0 -11px;
+    padding: 9px 13px 9px 10px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-nav .aino-collapse .pull-right{
+    margin-right:15px;
+    color: #fff;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-nav li:last-child > a{
+    border-bottom: 1px solid #cc0000;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-nav .aino-collapse:before{
+    display: none;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-nav .aino-collapse:after{
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -31px -196px;
+    width: 9px;
+    height:13px;
+    display: block;
+    margin-right: 0;
+    margin-top: 2px;
+    position: absolute;
+    right: 10px;
+    top:9px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-nav .aino-collapse.active:after {
+    background-position: -13px -196px;
+    width: 14px;
+    margin-top:0;
+}
+
+.aino-container.mobile .aino-collapse-content p{
+    margin: 15px 0;
+    line-height: 19px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-nav .active .aino-input{
+    background-color: #f8f8f8;
+    color: #000;
+}
+
+.aino-container.mobile .aino-collapse-content .active .aino-title,
+.aino-container.mobile .aino-collapse-content .active .aino-address
+{
+    color: #cc0000;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-input{
+    margin:0 -50px;
+    padding: 9px 0 9px 70px;
+    color: #474747;
+    border-bottom: 1px solid #dadada;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-indicator{
+    left: 24px;
+    top: 9px;
+}
+.aino-container.mobile .post-code-input{
+    position: static;
+    width: 100%;
+    text-align: center;
+    padding: 5px 0;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list.active > div{
+    background-color: #f8f8f8;
+    color: #cc0000;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list > div{
+    border-bottom: 2px solid #f2f2f2;
+    background-color: #fff;
+    margin: 0 -25px;
+    padding: 15px;
+    line-height: 20px;
+    font-size: 15px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list .aino-input{
+    border:none;
+    margin: 0;
+    position: relative;
+    padding-left: 49px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list .aino-input .aino-indicator{
+    left: 7px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list .aino-input:before{
+    content: '';
+    background:url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -3px -211px;
+    display: block;
+    width: 36px;
+    height: 36px;
+    position: absolute;
+    top: 31px;
+    left: -1px;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list .aino-distance{
+    float: right;
+    font-size: 11px;
+    color: #a6a6a6;
+}
+
+.aino-container.mobile .aino-collapse-content .aino-result-list .aino-open-hours{
+    font-size: 11px;
+    color: #a6a6a6;
+    margin-top: 12px;
+    line-height: 11px;
+}
+
+.aino-container .aino-nav .aino-open-hours{
+    font-size: 11px;
+    color: #a6a6a6;
+    margin-top: 12px;
+    line-height: 11px;
+}
+
+.nicescroll-rails{
+    background-color: #8d8d8d !important;
+    width: 5px !important;
+    border-radius: 5px;
+    z-index: 10;
+}
+
+.nicescroll-rails ins{
+    background-color: #e6e6e6;
+    width: 5px;
+}
+
+.see-more-locations{
+    text-align: center;
+    padding-top: 12px;
+    cursor: pointer;
+}
+
+.aino-tab-sub-title{
+    color: #888;
+    line-height: 21px;
+    font-size: 14px;
+    margin-bottom: -10px;
+}
+
+.pull-right{
+    float: right;
+}
+
+.aino-inner-tabs .mounth-day{
+    float: left;
+    margin-right:1.5rem;
+}
+
+.aino-inner-tabs a[role="tab"] .pull-right{
+    margin-right:15px;
+}
+
+.aino-delivery-time-picker li label:before{
+    content: 'kl. ';
+}
+
+.aino-delivery-time-picker .mounth-day{
+    display: none;
+}
+
+.delivery-time-title{
+    height:45px;
+    padding-top: 25px !important;
+    border-bottom: 2px solid #efefef;
+}
+
+.delivery-time-title i{
+    position: absolute;
+    left: 25px;
+    font-style: normal;
+}
+
+.toggle-calendar {
+    display: none;
+    background-color: #cc0000;
+    color: #fff;
+    margin: 0px -15px;
+    padding: 13px 30px 13px 14px;
+    cursor: pointer;
+    font-size: 20px!important;
+    font-family: 'Stag Sans Round - Book'!important;
+    text-align: center;
+    position: relative;
+}
+
+.toggle-calendar:after{
+    content: '';
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -14px -67px;
+    display: block;
+    position: absolute;
+    top: 14px;
+    right: 16px;
+    width: 10px;
+    height: 16px;
+}
+
+.aino-calendar-holder,.delivery-time{
+    border-bottom:none !important;
+}
+
+.aino-calendar-holder{
+    padding-bottom: 0 !important;
+    padding-top: 0 !important;
+}
+
+.aino-smart-delivery .aino-calendar-holder{
+    padding: 0 15px;
+}
+
+.delivery-time{
+    padding: 0 !important;
+    position: relative;
+    z-index: 2;
+    display: none;
+    width:100% !important;
+}
+
+.delivery-time .close-inner{
+    position: absolute;
+    right: 24px;
+}
+
+.aino-delivery-time-picker{
+    height:370px;
+}
+
+.aino-calendar.hidden{
+    opacity: 0;
+    height: 0;
+}
+
+
+.aino-arrival{
+    overflow: hidden;
+    height: 550px;
+}
+
+.aino-container.desktop .aino-calendar{
+    margin: 0 -15px;
+}
+
+.aino-calendar{
+    border-bottom: none !important;
+    -moz-transition: all 500ms ease;
+    -webkit-transition: all 500ms ease;
+    -o-transition: all 500ms ease;
+    transition: all 500ms ease;
+    opacity: 1;
+    height:375px;
+}
+
+.aino-calendar table,.aino-calendar th,.aino-calendar td{
+    border: 2px solid #fff;
+    text-align: center;
+}
+
+.aino-calendar table{
+    border: none;
+}
+
+.aino-calendar thead tr{
+    background-color: #29abcc;
+    color: #fff;
+}
+
+.aino-calendar thead tr th{
+    padding: 7px 0 8px;
+    font-family: Verdana, Arial, sans-serif;
+    border: none;
+}
+
+.aino-calendar table td a,
+.aino-calendar table td span{
+    font-family: Verdana, Arial, sans-serif;
+    font-style: normal;
+    padding:15px 13px 14px 13px;
+}
+
+.aino-calendar table td a{
+    color: #000;
+    background-color: #fff;
+    border-color: #eee;
+    border-radius: 0;
+}
+
+.aino-calendar table td span{
+    display: block;
+    border: 1px solid #eee;
+}
+
+.aino-calendar table td{
+    padding: 0;
+    font-size: 14px;
+}
+
+.aino-calendar .ui-state-disabled{
+    color: #a5a5a5;
+    opacity: 1 !important;
+    background: #e1e1dd;
+}
+
+.aino-calendar .ui-datepicker-header{
+    margin-right:1px;
+    height:45px;
+    position: relative;
+}
+
+.aino-calendar .ui-datepicker-header > a, .aino-calendar .ui-datepicker-header > div{
+    float: left;
+    text-align: center;
+}
+
+.aino-calendar .ui-datepicker-header > .ui-datepicker-next{
+    float: right;
+}
+
+.aino-calendar .ui-datepicker-header > a{
+    width: 21.5%;
+    background-color: #2399b7;
+    min-height: 1px;
+    padding: 14px 0;
+    cursor: pointer;
+}
+
+.aino-calendar .ui-datepicker-header .ui-datepicker-prev:before,
+.aino-calendar .ui-datepicker-header .ui-datepicker-next:before{
+    content: '';
+    display: block;
+    width: 10px;
+    height: 17px;
+    margin: 0 auto;
+}
+
+.aino-calendar .ui-datepicker-header .ui-datepicker-prev:before{
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -18px -339px;
+}
+
+.aino-calendar .ui-datepicker-header .ui-datepicker-next:before{
+    background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -3px -339px;
+}
+
+.aino-calendar .ui-datepicker-header > a span{
+    display: none;
+}
+
+.aino-calendar .ui-state-active{
+    background-color: #249ab9;
+    color: #fff;
+}
+
+.aino-calendar table td a:hover{
+    background-color: #cc0000;
+    color: #fff;
+    border-radius: 0;
+}
+
+.aino-calendar .ui-datepicker-header > div{
+    width: 56.3%;
+    padding: 13px 0;
+    color: #fff;
+    background-color: #2399b7;
+    font-size: 20px;
+    border-left:1px solid #fff;
+    border-right:1px solid #fff;
+}
+
+#calc-swe-sweden .aino-tabs-body .aino-column-2 li:hover{
+    background-color: #fdfdfd;
+}
+
+
+.aino-tabs-body .aino-smart-delivery .aino-calendar table td span,
+.aino-tabs-body .aino-smart-delivery .aino-calendar table td a{
+    padding: 15px 14px 14px 14px;
+}
+
+.aino-tabs-body .aino-smart-delivery .ui-datepicker-header > div{
+    width: 61.2%;
+}
+
+.aino-tabs-body .aino-smart-delivery .ui-datepicker-header > a{
+    width: 18.5%;
+}
+
+.aino-tabs-body .aino-smart-delivery .ui-datepicker-header > .ui-datepicker-next{
+    margin-right: 4px;
+}
+
+.aino-tabs-body .aino-smart-delivery-time .aino-delivery-time-picker{
+    height: 500px;
+}
+.aino-tabs ul.aino-nav .aino-address-tab em,
+.aino-tabs ul.aino-nav .aino-business-tab em,
+.aino-tabs ul.aino-nav .aino-office-tab em,
+.aino-tabs ul.aino-nav .aino-mailbox-tab em{
+    display:block;
+}
+
+.aino-container .aino-core{
+    position: relative;
+}
+
+.aino-footer{
+    position: absolute;
+    width: 100%;
+    right: 2%;
+    bottom: 2%;
+}
+
+/*mobile styles*/
+
+/*@media height*/
+@media (min-height: 550px){
+    .address-near-you, .aino-map{
+        height: 460px;
+    }
+}
+@media (min-height: 600px){
+    .address-near-you, .aino-map{
+        height: 525px;
+    }
+}
+@media (min-height: 650px){
+    .address-near-you, .aino-map{
+        height: 560px;
+    }
+}
+@media (min-height: 700px){
+    .address-near-you, .aino-map{
+        height: 603px;
+    }
+}
+@media (min-height: 750px){
+    .address-near-you, .aino-map{
+        height: 650px;
+    }
+}
+
+@media (min-height: 800px){
+    .address-near-you, .aino-map{
+        height: 675px;
+    }
+}
+
+@media (min-height: 850px){
+    .address-near-you, .aino-map{
+        height: 715px;
+    }
+}
+
+@media (min-height: 900px){
+    .address-near-you, .aino-map{
+        height: 627px;
+    }
+}
+
+@media (min-height: 1000px){
+    .address-near-you, .aino-map{
+        height: 685px;
+    }
+}
+
+@media (max-height: 1023px){
+    .aino-container{
+        top: 5%;
+        bottom: 15%;
+    }
+
+    .aino-container > .aino-core > .aino-tabs,
+    .aino-container .aino-inner-tabs{
+        max-height: 81%;
+    }
+}
+
+@media (max-height: 900px){
+    .aino-container{
+        top: 2%;
+        bottom: 1%;
+    }
+}
+
+@media (max-height: 800px){
+    .aino-container{
+        top: 0 !important;
+        bottom: 0 !important;
+    }
+}
+
+@media (max-height: 787px){
+    .aino-tabs-body .aino-smart-delivery-time .aino-delivery-time-picker{
+        height: 500px;
+    }
+
+    .aino-arrival ul{
+        height: 450px;
+    }
+    
+    .aino-container > .aino-core > .aino-tabs ,
+    .aino-container .aino-inner-tabs{
+        max-height: 72%;
+        height: 72%;
+    }
+
+   /* .aino-container .aino-post-office{
+        margin-top: -77px;
+    }
+*/
+
+    }
+
+@media (max-height: 700px){
+
+    .aino-container > .aino-core > .aino-tabs,
+    .aino-container .aino-inner-tabs{
+        max-height: 66%;
+    }
+
+    .aino-delivery-time-picker
+    {
+        height: 280px;
+    }
+
+    .aino-tabs-body .aino-smart-delivery-time .aino-delivery-time-picker{
+        height: 400px;
+    }
+}
+
+
+/*@media height*/
+/*@media width*/
+@media (min-width: 1401px) {
+    .aino-container .aino-column > .aino-inner-tabs .aino-tabs-body,
+    .aino-container .aino-column > .aino-tabs > ul,
+    .aino-container .aino-tabs-body .aino-tabs-body,
+    .aino-container .aino-inner-tabs > ul{
+        width: 100%;
+    }
+}
+@media (max-width: 1400px) {
+    .aino-footer > div {
+        margin-right: 28px;
+    }
+
+    .aino-container .aino-column > .aino-tabs .aino-tabs-body,
+    .aino-container .aino-tabs-body .aino-tabs-body,
+    .aino-container .aino-column > .aino-tabs > ul ,
+    .aino-container .aino-inner-tabs > ul{
+        width: 100%;
+    }
+
+}
+
+@media (max-width: 1200px) {
+
+    .aino-map-container .directions-display-type{
+        top: 61px;
+        right: 20px;
+    }
+
+    .aino-deliver-to > li > a > span{
+        max-width:118px;
+    }
+
+    .aino-tabs-body .aino-smart-delivery .aino-calendar table td span,
+    .aino-tabs-body .aino-smart-delivery .aino-calendar table td a{
+        padding: 15px 9px 14px 9px;
+    }
+
+    .aino-tabs-body .aino-smart-delivery .ui-datepicker-header > div{
+        width: 57.4%;
+    }
+
+    .aino-tabs-body .aino-smart-delivery .ui-datepicker-header > .ui-datepicker-next{
+        margin-right:3px;
+    }
+
+    .aino-tabs-body .aino-smart-delivery .ui-datepicker-header > a{
+        width: 20.4%;
+    }
+
+    .aino-inner-tabs a[role="tab"] .pull-right{
+        margin-right: 5px;
+        float: none;
+        text-align: right;
+    }
+
+    .aino-calendar .ui-datepicker-header > a{
+        width: 21.4%;
+    }
+
+    .aino-calendar table td a,
+    .aino-calendar table td span{
+        padding: 15px 8px 14px 8px;
+    }
+
+    .aino-calendar table, .aino-calendar th, .aino-calendar td{
+        border: 1px solid #fff;
+    }
+
+    .aino-calendar .ui-datepicker-header{
+        margin-right: 0;
+        margin-left: 1px;
+    }
+
+    .aino-calendar table td{
+        font-size: 15px;
+    }
+
+
+    .address-near-you .aino-index{
+        margin-bottom:0;
+    }
+
+    .aino-container .aino-tabs-body{
+        width: 74%;
+    }
+
+    .aino-container.desktop .aino-core{
+        width: 957px;
+    }
+
+    .aino-deliver-to > li > a:before{
+        margin-right: 17px;
+    }
+}
+
+@media (max-width: 992px) {
+    
+    
+    .aino-tabs-body .aino-smart-delivery .toggle-calendar .pull-right
+    {
+        float:none;
+        text-align: right;
+    }
+    .aino-arrival{
+        width: 270px;
+    }
+    .aino-container.desktop .aino-calendar{
+        margin: 0 -22px 0 -10px;
+    }
+    .aino-calendar-holder{
+        width: 240px !important;
+    }
+    .aino-calendar table td a,
+    .aino-calendar table td span,
+    .aino-tabs-body .aino-smart-delivery .aino-calendar table td span,
+    .aino-tabs-body .aino-smart-delivery .aino-calendar table td a{
+        padding: 15px 8px 14px 7px;
+    }
+
+    .aino-calendar .ui-datepicker-header > a,
+    .aino-tabs-body .aino-smart-delivery .ui-datepicker-header > a{
+        width: 22.4%;
+        position: absolute;
+    }
+
+    .aino-calendar .ui-datepicker-header > div,
+    .aino-tabs-body .aino-smart-delivery .ui-datepicker-header > div{
+        left:20.4%;
+        position: absolute;
+    }
+
+    .aino-tabs-body .aino-smart-delivery .ui-datepicker-header > .ui-datepicker-next{
+        margin-right:0;
+    }
+
+    .aino-calendar .ui-datepicker-header .ui-datepicker-next{
+        right: 6px;
+    }
+
+    .aino-container .aino-tabs-body{
+        width:73%;
+    }
+    
+    .aino-container.desktop .aino-core{
+        width:100%;
+    }
+
+    .address-near-you{
+        width: 37%;
+    }
+
+    .aino-map-container{
+        width: 65% !important;
+    }
+
+    .aino-footer > div {
+        margin-right: 8px;
+    }
+
+    .aino-deliver-to > li>  a{
+        padding: 16px;
+    }
+
+    .aino-container .aino-tabs-body .aino-column-2 ul li{
+        padding: 0 5px;
+    }
+
+    .aino-container .aino-input{
+        padding-right: 5px;
+    }
+
+    .aino-container .aino-tabs-body .aino-column-2 > div{
+        padding: 11px 9px 23px;
+    }
+
+    .aino-map-container .directions-display-type{
+        right: 40px;
+    }
+
+    .post-code-input{
+        right: 40px;
+    }
+
+    .aino-map-container .gm-style-mtc{
+        margin-top: 51px !important;
+    }
+}
+
+@media (max-width: 900px) {
+    .aino-inner-tabs .mounth-day {
+        float: none;
+        text-align: left;
+    }
+    .address-near-you .aino-index{
+        margin-left: 4px;
+    }
+    
+    .aino-deliver-to > li > a:before{
+        margin-right: 12px;
+    }
+}
+
+@media (max-width: 850px){
+    .zipcode-holder {
+        width: 84%;
+    }
+}
+
+@media (min-width: 768px){
+    .aino-deliver-to > li > a{
+        max-width: 252px;
+    }
+    .aino-open-hours {
+        display: none;
+    }
+}
+
+@media (max-width: 767px){
+    .aino-container .aino-nav{
+        float: none;
+        margin-top: 0 !important;
+    }
+
+    .aino-container .aino-input {
+        padding-left: 70px;
+    }
+
+    .label-text .pull-right{
+        margin-right: 15px;
+    }
+
+    .aino-calendar .ui-datepicker-header{
+        width: 100%;
+        margin-right: 0;
+    }
+
+    .aino-calendar{
+        height: auto;
+        margin: 0 -35px;
+    }
+
+    .aino-calendar table{
+        width:100%;
+    }
+
+    .aino-calendar .ui-datepicker-header > a{
+        top: -2px;
+        padding: 14.5px 0;
+        width: 21.6%;
+    }
+
+    .aino-calendar .ui-datepicker-header .ui-datepicker-next{
+        right:2px;
+    }
+
+    .aino-calendar .ui-datepicker-header > div{
+        width: 56.4%;
+        left: 21.6%;
+        padding: 8px 0;
+        line-height: 30px;
+    }
+
+    .aino-delivery-time-picker{
+        height:auto;
+        margin-top: 14px;
+    }
+}
+
+/*@media width*/
+/*@media width and height*/
+
+@media (max-width: 375px) and (max-height: 667px){
+    .aino-container .aino-tabs{
+        height: 60% !important;
+    }
+}
+
+@media (max-width: 320px) and (max-height: 568px){
+    .aino-container .aino-tabs{
+        height: 55% !important;
+    }
+}
+.aino-core a, .aino-core li, .aino-core div, .aino-core span, .aino-core p, .aino-core button,
+.aino-core label{
+    font-size: inherit;
+    font-family: inherit;
+    line-height: normal;
+    font-weight: normal !important;
+}
+
+.aino-nav li .aino-indicator{
+    display: none;
+}
+
+.aino-nav li.active .aino-indicator{
+    display: block;
+}
+
+/*Corrections*/
+.aino-container a,
+.aino-container label{
+    -webkit-touch-callout: none !important;
+    -webkit-user-select: none !important;
+    -khtml-user-select: none !important;
+    -moz-user-select: none !important;
+    -ms-user-select: none !important;
+    user-select: none !important;
+    -webkit-tap-highlight-color: rgba(255, 255, 255, 0);
+}
+
+.aino-container.desktop .aino-collapse{
+    padding-left: 58px;
+    color: inherit;
+    text-decoration: none;
+}
+
+.address-near-you ul{
+    margin-left: 0;
+}
+
+.address-near-you .aino-distance{
+    padding: 0 9px;
+}
+
+.address-near-you ul > li .aino-input{
+    word-break: break-all;
+}
+
+.aino-map-container{
+    width: 68%;
+}
+
+.aino-deliver-to > li > a span{
+    width: 72%;
+}
+
+.aino-container .aino-header .postnord-logo{
+    margin-top: 21px;
+}
+
+.aino-arrival{
+    overflow: visible;
+}
+
+.aino-arrival ul{
+    overflow: hidden;
+    height: 500px;
+}
+
+.aino-container .aino-inner-tabs > ul > li > div.active:before{
+    content: '';
+    border-top: 4px solid #cc0000;
+    display: block;
+    margin-top: -19px;
+    margin-bottom: 15px;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs li [role=tab] label{
+    display: block;
+    font-weight: normal;
+    margin-bottom: 0;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs ul{
+    position: relative;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs .delivery-context.active:before{
+    content: '';
+    border-top: 4px solid #cc0000;
+    display: block;
+    position: absolute;
+    top: 0;
+    width: 44%;
+}
+
+.aino-container .tab-list.aino-column .aino-inner-tabs .delivery-context:before{
+    display: none;
+}
+
+.aino-nav > .aino-collapse{
+    color: #636363;
+    font-weight: 600;
+    text-decoration: none !important;
+}
+
+.aio-options{
+    display: none;
+}
+.aio-options select{
+    width: 49%;
+    margin:5px 1% 0 0;
+}
+
+.aio-options.active{
+    display: block;
+}
+
+.aio-hidden{
+    display: none !important;
+}
+
+button.aio-pick-btn{
+    background-color: #cc0000 !important;
+    padding: 14px 26px;
+    color: #fff;
+    font-family: 'Stag Sans Round - Medium';
+    border: none;
+    line-height: normal;
+    width: 70%;
+    max-width: 211px;
+    word-spacing: 3px;
+}
+
+@media (max-width: 1200px){
+    .aino-deliver-to > li > a > span{
+        word-break: break-word;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs .delivery-context.active:before{
+        width: 43%;
+    }
+}
+
+@media (max-width: 992px){
+    .aino-container .aino-collapse {
+        padding-left: 66px !important;
+    }
+}
+
+@media (max-width: 768px){
+    .aino-container .aino-core {
+        width: 98% !important;
+    }
+}
+
+@media (max-width: 767px){
+    .zipcode-holder{
+        position: static;
+        width: 100%;
+        text-align: center;
+    }
+    
+    .post-code-input{
+        float: none;
+    }
+    
+    .address-near-you{
+        width: 100%;
+        height: auto;
+        margin-top: 0;
+        float: none;
+        overflow: visible;
+        padding-left: 0;
+    }
+    
+    .address-near-you .aino-title, 
+    .address-near-you .aino-rating, 
+    .address-near-you .aino-address{
+        width: 100%;
+    }
+    
+    .address-near-you ul > li{
+        background-color: transparent;
+        margin: 0px -15px;
+        padding: 0 0 0 17px !important;
+    }
+    
+    .address-near-you li.active{
+        border-bottom: 1px solid #dadada;
+        background-color: #f8f8f8;
+    }
+    
+    .address-near-you li.active .aino-distance {
+        background-color: transparent;
+    }
+    
+    .address-near-you li.active > div{
+        border-bottom: none;
+        margin-bottom: 0;
+    }
+    
+    .address-near-you .aino-input{
+        padding: 12px 0 9px 49px !important;
+        font-size: 15px;
+        height: 101px;
+    }
+    
+     .address-near-you .aino-input .aino-indicator
+     {
+        left: 9px;
+     }
+     
+     .address-near-you .aino-input> div{
+         vertical-align: middle;
+        display: inline-block;
+        width: 100%;
+     }
+    
+    .address-near-you .aino-input:before{
+        content: '';
+        background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -3px -211px;
+        display: block;
+        width: 36px;
+        height: 36px;
+        position: absolute;
+        left: -1px;
+        top: 31px;
+    }
+    
+    .post-code-input input{
+        width: 77px;
+    }
+    
+    .address-near-you .aino-distance{
+        position: static;
+        float: right;
+        color: #a6a6a6;
+        background-color: transparent;
+        width: auto;
+    }
+    .address-near-you li.active .aino-distance{
+        height: auto;
+    }
+    
+    .address-near-you .aino-distance span{
+        font-size: 11px;
+    }
+    
+    .address-near-you .aino-index{
+        display: none;
+    }
+    
+    .address-near-you .aino-title{
+        float:none;
+    }
+    
+    .aino-container{
+        width: 100%;
+        position: fixed;
+        top: 0;
+        bottom: 0;
+        outline: 0;
+    }
+
+    .all-in-one-container .aino-container{
+        display: block;
+    }
+    
+    .aino-container  .aino-core{
+        width: 100% !important;
+        height: 100% !important;
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .aino-container > .aino-core > .aino-tabs,
+    .aino-container .aino-inner-tabs{
+        max-height: none;
+        border: none;
+    }
+
+    .aino-container .aino-tabs{
+        margin-bottom: 14px;
+        height: 72%;
+        overflow-y: auto;
+        overflow-x: hidden;
+    }
+
+    .aino-container .aino-header .postnord-logo{
+        width: 100%;
+        text-align: center;
+        float: none;
+    }
+
+    .aino-container.mobile .aino-body .aino-nav li a {
+        border-top: 2px solid #f3f3f3;
+        font-family: 'Stag Sans Round - Medium';
+    }
+
+    .aino-container .aino-nav:before,
+    .aino-container .aino-nav:after {
+        content: "";
+        display: table;
+    }
+
+    .aino-container .aino-nav:after {
+        clear: both;
+    }
+
+    .aino-container .aino-weather{
+        background-color: #f7f7f7;
+        border-top: 1px solid #dadada;
+        border-bottom: 1px solid #dadada;
+        padding: 24px 0 18px;
+        margin-top: 0;
+        margin-bottom: 13px;
+        overflow: auto;
+    }
+
+    .aino-container .aino-weather .aino-nav{
+        width: 600px;
+        float: none;
+        margin: 0 auto;
+        padding:0 15px;
+    }
+
+    .aino-deliver-to > li > a{
+        width: 100%;
+        box-shadow: none;
+        margin-bottom: 0;
+        border-top: 2px solid #f3f3f3;
+    }
+    
+    .aino-deliver-to > li > a > span{
+        max-width: none;
+        width: 85%;
+    }
+    
+   
+    .aino-deliver-to > li > a span span{
+        width: auto;
+    }
+  
+    
+    .aino-tabs ul.aino-nav .aino-address-tab em, 
+    .aino-tabs ul.aino-nav .aino-business-tab em,
+    .aino-tabs ul.aino-nav .aino-office-tab em, 
+    .aino-tabs ul.aino-nav .aino-mailbox-tab em{
+       display: inline-block;
+    }
+   
+    
+    .aino-deliver-to > li > a .aino-delivery-price{
+        float: right;
+    }
+    .aino-deliver-to > li > a .aino-delivery-price:first-child{
+        display: none;
+    }
+    
+    .aino-deliver-to > li > a .aino-delivery-price:last-child{
+        display: block;
+    }
+    
+    .aino-container .aino-textarea-holder{
+        margin-bottom: 15px;
+    }
+    
+    .aino-deliver-to > li > .tab-list{
+        position: static;
+        width: 100%;
+        padding: 0 15px;
+    }
+    
+    .aino-container .aino-footer > div{
+        width: 100%;
+        margin-right: 0;
+    }
+    
+    .aino-container .aino-footer .aino-button.gray{
+        margin-right: 2%;
+    }
+    
+    .aino-container .aino-footer .aino-button{
+        width: 49%;
+        display: block;
+        float: left;
+        padding: 11px;
+    }
+    
+    .aino-container .aino-tabs-body .tab-list{
+        width: 90%;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs li.active [role=tab] span{
+        margin-left: 0;
+    }
+    
+    .aino-delivery-price:first-child{
+        display: none;
+    }
+    
+    .aino-delivery-price:last-child{
+        display: block;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs .delivery-context{
+        float: none;
+        width: 100%;
+        padding-right: 0;
+    }
+    
+    .aino-container .aino-column-2 {
+        display: none;
+        width: 100%;
+        position: static;
+    }
+    
+    .aino-container .aino-column-2 > ul{
+        padding: 14px 25px;
+    }
+    
+    .aino-arrival,.aino-arrival ul{
+        overflow: visible;
+        height: auto;
+    }
+    
+    .aino-container .aino-inner-tabs > ul > li > div.active:before{
+        display: none;
+    }
+    
+    .aino-container .aino-column-2 ul li{
+        margin: 0 -49px 0 -50px;
+        border-bottom: 1px solid #dadada;
+    }
+    
+    .aino-collapse-content{
+        margin: 0;
+    }
+    
+    .aino-collapse-content ul li{
+        margin: 0;
+    }
+    
+    .aino-collapse-content .aino-input{
+        padding-left: 108px !important;
+    }
+    
+    .aino-collapse-content .aino-input  .aino-indicator{
+        left: 70px;
+    }
+    
+    .aino-container .aino-column-2 > div{
+        display: none;
+    }
+    
+    .aino-container .aino-input{
+        padding: 9px 0 9px 70px;
+        color: #474747;
+        border-bottom: none;
+    }
+    
+    .aino-container .aino-indicator{
+        top: 9px;
+        left: 30px;
+    }
+    .aino-container .aino-column-2 .aino-sub-nav{
+        border-bottom: none;
+    }
+    
+    .aino-container .aino-collapse{
+        margin: 0 -12px;
+        padding: 9px 0 9px 82px !important;
+        color: #474747 !important;
+        border-bottom: 1px solid #dadada !important;
+    }
+    
+    .aino-container .aino-collapse-content li:last-child{
+        border-bottom: none;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs li [role=tab]{
+        background-color: #cc0000;
+        border-top: 1px solid #cc0000;
+        border-bottom: 1px solid #cc0000;
+        color: #ffffff;
+        margin: 0;
+        padding: 9px 30px 9px 10px;
+    }
+    
+    .aino-map-container{
+        float: none;
+        margin: 0 0;
+        width: auto !important;
+    }
+    
+    .aino-map-container .post-code-input{
+        position: static;
+        padding: 0 0;
+        margin: 20px 0;
+        text-align: center;
+    }
+    
+    .aino-map-container .aino-map,
+    .aino-map-container .directions-display-type
+    {
+        display: none;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs li [role=tab] span,
+    .aino-container .tab-list.aino-column .aino-inner-tabs li.active [role=tab] span{
+        padding: 0;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs li [role=tab]:after{
+        content: '';
+        background: url("../../../images/vconnect/aio/aino-icons-red.png") no-repeat -31px -196px;
+        width: 9px;
+        height: 13px;
+        display: block;
+        margin-right: 0;
+        margin-top: 2px;
+        position: absolute;
+        right: 10px;
+        top: 11px;
+    }
+    
+    .aino-container .tab-list.aino-column .aino-inner-tabs li.active [role=tab]:after{
+        background-position: -13px -196px;
+        width: 14px;
+        margin-top: 0;
+    }
+   
+    .aino-container .delivery-context .aino-tab-sub-title,
+    .aino-container .delivery-context p
+    {
+        margin: 15px 0;
+        line-height: 19px;
+    }
+    
+    .aino-container .aino-inner-tabs > ul > li{
+        margin-bottom: 0;
+    }
+}
+
+@media only screen and (max-width: 500px) {
+    .aio-options select {
+        width: 100%;
+    }
+}
+
+@media only screen and (max-width: 360px) {
+    button.aio-pick-btn{
+        width: 100%;
+        max-width: none;
+    }
+}

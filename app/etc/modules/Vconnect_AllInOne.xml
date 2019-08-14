@@ -1,0 +1,8 @@
+<config>
+    <modules>
+        <Vconnect_AllInOne>
+            <active>true</active>
+            <codePool>community</codePool>
+        </Vconnect_AllInOne>
+    </modules>
+</config>

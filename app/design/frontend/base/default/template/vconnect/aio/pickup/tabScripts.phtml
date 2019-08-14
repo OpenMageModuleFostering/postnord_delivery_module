@@ -1,0 +1,487 @@
+<?php
+/*
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/base.phtml
+ */
+
+$config = $this->getConfig();
+?>
+
+<script>
+    window.pointsEndpoint = "<?php echo $this->getUrl('aio/index/index', array('_secure' => true))?>";
+</script>
+<script>
+    jQuery(function($){
+        String.prototype.insertString = function(start, delCount, newSubStr) {
+            return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
+        };
+        
+        var called = false,labels = [],bounds,markers = [],directionsDisplay,aio_points = [];
+        
+        $('.all-in-one-container').on('tab_visible_<?php echo $this->getCode()?>',function(){
+
+            if(called){
+                return;
+            }
+            called = true;
+            bootstrap(function(){
+                var shipContryVal = $('select[name="shipping[country_id]"]:last').val();
+                var shipPostcodeVal = $('input[name="shipping[postcode]"]:last').val();
+                var shipStreetVal = $('input[name="shipping[street][]"]:first').val();
+                var billContryVal = $('select[name="billing[country_id]"]:last').val();
+                var billPostcodeVal = $('input[name="billing[postcode]"]:last').val();
+                var billStreetVal = $('input[name="billing[street][]"]:first').val();
+
+                <?php if (Mage::app()->getRequest()->getControllerModule() == 'Avenla_KlarnaCheckout'): ?>
+                if ($('select[name="country_id"]').length > 0 && $('input[name="estimate_postcode"]').length > 0) {
+                    var shipContryVal = $('select[name="country_id"]:last').val();
+                    var shipPostcodeVal = $('input[name="estimate_postcode"]:last').val();
+                }
+                <?php endif; ?>
+
+                if (($('#onestepcheckout-form').length > 0 || $('.opc-wrapper-opc').length > 0) && $('input[name="billing[use_for_shipping]"]').length > 0 && $('input[name="billing[use_for_shipping]"]').is(':checked')) {
+                   shipContryVal = '';
+                   shipPostcodeVal = '';
+                   shipStreetVal = '';
+                } else if ($('#one-step-checkout-form').length > 0 && $('input[name="shipping[different_shipping]"]').length > 0 && !$('input[name="shipping[different_shipping]"]').is(':checked')) {
+                   shipContryVal = '';
+                   shipPostcodeVal = '';
+                   shipStreetVal = '';
+                }
+                
+                var country_id  = (shipContryVal !== '')?shipContryVal:billContryVal;
+                var postcode  = (shipPostcodeVal !== '')?shipPostcodeVal:billPostcodeVal;
+                var street  = (shipStreetVal !== '')?shipStreetVal:billStreetVal;
+
+                if (country_id != '' && postcode == '') {
+                    if (country_id == 'SE') {
+                        postcode = '10044';
+                    } else if (country_id == 'FI') {
+                        postcode = '00100';
+                    } else if (country_id == 'NO') {
+                        postcode = '0107';
+                    } else if (country_id == 'DK') {
+                        postcode = '1000';
+                    }
+                }
+
+                var map =   initMap();
+                window.map = map;
+                $('.post-code-input input').val(postcode);
+                $('.post-code-input button').on('click',function(){
+
+                    getPickupPoints(country_id,$('.post-code-input input').val(),null,function(points){
+                        setMapContent(map,points,false);
+                    },false);
+                });
+                getPickupPoints(country_id,postcode,street,function(points){
+                     setMapContent(map,points,true);
+                },true);
+            });
+            
+            
+            
+        });
+        $('.all-in-one-container').on('tab.visible',function(target,el){
+            console.log('.post-office 1');
+        });
+//        $('.aino-tabs-body').on('tab.opened.post-office',function(){
+//            
+//              
+//        });
+        
+
+        function initMap() 
+        {
+            // Create a map object and specify the DOM element for display.
+            var center = { lat:58.663585, lng:15.307749 } ;
+            var zoom = 5;
+            if(typeof current_loc !== 'undefined'){
+                center = current_loc;
+                zoom = 8;
+            }
+            window.map = new google.maps.Map($('.aino-map:last')[0], {
+                scrollwheel : true,
+                zoom        : zoom,
+                mapTypeId   : google.maps.MapTypeId.ROADMAP,
+                zoomControl : true,
+                center      : center 
+            });
+            google.maps.event.addListenerOnce(map, 'idle', function(){
+                google.maps.event.trigger(map, 'resize');
+            });
+            $(window).resize(function() {
+                google.maps.event.trigger(map, 'resize');
+            });
+                
+            
+
+            return map;
+            
+        }
+        function showDirections(map, origin, destination, type){
+            if(directionsDisplay != null) {
+                directionsDisplay.setMap(null);
+                directionsDisplay = null;
+            }
+
+            directionsDisplay = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true
+            });
+
+
+            // Set destination, origin and travel mode.
+            var request = {
+                destination: destination,
+                origin: origin,
+                travelMode: google.maps.TravelMode[type]
+            };
+
+
+            // Pass the directions request to the directions service.
+            var directionsService = new google.maps.DirectionsService();
+            directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    // Display the route on the map.
+                    directionsDisplay.setDirections(response);
+                }
+
+                google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
+                    var oldZoom = map.getZoom();
+
+                    if(oldZoom > 14){
+                        map.setZoom(oldZoom - 1);
+                    }
+                    else{
+                        map.setZoom(oldZoom);
+                    }
+                });
+            });
+
+            return directionsDisplay;
+        }
+        function getPickupPoints(country_id,postcode,street,callback,shouldGoecode)
+        {
+            console.log('getPickupPoints called');
+
+            try{
+                delete window.current_loc;
+            }catch(e){}
+
+            if(street && shouldGoecode){
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({
+                    address: street + ',' + postcode + ',' + country_id
+                }, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        $.each( results, function( i, v ) {
+                            if(typeof v.partial_match === 'undefined' || !v.partial_match){
+                                window.current_loc = v.geometry.location;
+                            }
+                        });
+                    } 
+                });
+            }
+            var dataToSend = {
+                country_id  : country_id,
+                postcode    : postcode
+            };
+            if(street){
+                dataToSend.street = street;
+            }
+            $.ajax({
+                url     : pointsEndpoint,
+                data    : dataToSend
+            }).done(function (data) {
+
+                if( typeof data.postnord.servicePointInformationResponse === 'undefined')
+                {
+                    if( typeof data.postnord.message !== 'undefined'){
+                        console.error(data.postnord.message);
+                    }
+                    return console.log('Pickup api\'s return unknown error');
+                }
+                var points = data.postnord.servicePointInformationResponse.servicePoints;
+                aio_points = points;
+                if(callback) {
+                    callback(points);
+                }
+            });
+        }
+        
+        
+        
+        function setMapContent(map,points,direction)
+        {
+            labels = [];
+
+            $.each( markers, function( i, v ) {
+                v.setMap(null);
+            });
+
+            markers = [];
+            
+            bounds = new google.maps.LatLngBounds();
+            var container = $('.address-near-you .aino-nav').empty();
+            var x = 1;
+            var image = {
+                url:  '<?php echo $this->getSkinUrl('images/vconnect/aio/temp.png') ?>',
+                size: new google.maps.Size(20, 40)
+            };
+            points.sort(function(a,b){
+                return a.routeDistance - b.routeDistance;
+            });  
+            locations = [];
+            $.each( points, function( i, v ) {
+                var location  = new google.maps.LatLng(v.coordinate.northing, v.coordinate.easting);
+                locations.push(location);
+                labels.push(makeMarkerLabel(v));
+                var marker = new MarkerWithLabel({
+                    map: map,
+                    icon: image,
+                    zIndex: i,
+                    labelContent: (x).toString(),
+                    labelClass: "aino-label",
+                    labelAnchor: new google.maps.Point(5, 50),
+                    position: location,
+                    labelStyle: {'display': 'block', height:'50px'}
+                });
+                markers.push(marker);
+                marker.addListener('click', function () {
+                    setActiveMapComponent(map,marker,true,direction);
+                });
+                var listItem = $('<li></li>').on('click',function(){
+                    setActiveMapComponent(map,marker,false,direction);
+                });
+                var distanceElement = $('<div class="aino-distance"><span></span></div>');
+                distanceElement.find('span').text((v.routeDistance/1000).toFixed(1) + ' km');
+
+                // openingHours
+                v_html_pickup_point = '';
+                v_pickup_point_monFriOpen = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[0].from1.insertString(2, 0, ":"):'';
+                v_pickup_point_monFriClose = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[0].to1.insertString(2, 0, ":"):'';
+                v_pickup_point_satOpen = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[v.openingHours.length-1].from1.insertString(2, 0, ":"):'';
+                v_pickup_point_satClose = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[v.openingHours.length-1].to1.insertString(2, 0, ":"):'';
+
+                if (v_pickup_point_monFriOpen || v_pickup_point_monFriClose) {
+                    v_html_pickup_point = '<div class="aino-open-hours">' +
+                        '<?php echo $this->__('Opening hours:'); ?> ' + v_pickup_point_monFriOpen +' - '+ v_pickup_point_monFriClose +'<br/>' +'</div>';
+                } else if (v_pickup_point_satOpen || v_pickup_point_satClose) {
+                    v_html_pickup_point = '<div class="aino-open-hours">' +
+                        '<?php echo $this->__('Opening hours:'); ?> ' + v_pickup_point_satOpen +' - '+ v_pickup_point_satClose +'</div>';
+                }
+
+                var addressItem = $('<div class="cf"></div>')
+                        
+                            .append(distanceElement)
+                            .append($('<div class="aino-index">' + x + '</div>'))
+                            .append($('<div class="aino-title">' + v.name + '</div>'))
+                            .append(
+                                $('<div class="aino-address">' + v.deliveryAddress.streetName + ' ' + v.deliveryAddress.streetNumber + '<br />' + v.deliveryAddress.postalCode + ' ' + v.deliveryAddress.city + ' </div>')
+                            )
+                            .append(v_html_pickup_point)
+                        ;
+                
+                
+                
+                
+                var shell = $('<div class="cf"></div>');
+                shell.append($('<label class="aino-input aino-checkbox"></label>')
+                        .append($('<input type="radio" name="delivery" value="">'))
+                        .append($('<span class="aino-indicator"></span>'))
+                        .append(addressItem)
+                    );
+                shell.appendTo(listItem.appendTo(container));
+                
+                
+                
+                
+                bounds.extend(location);
+                x++;
+            });
+           
+            map.fitBounds(bounds);
+            setActiveMapComponent(map,markers[0],false,false);
+        }
+        
+        function setActiveMapComponent(map, marker, scroll,direction){
+            var iwIndex = parseInt(marker.get('labelContent')) - 1;
+            var selectedPoint = aio_points[iwIndex];
+
+            pickup_point_monFriOpen = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[0].from1.insertString(2, 0, ":"):'';
+            pickup_point_monFriClose = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[0].to1.insertString(2, 0, ":"):'';
+            pickup_point_satOpen = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[selectedPoint.openingHours.length-1].from1.insertString(2, 0, ":"):'';
+            pickup_point_satClose = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[selectedPoint.openingHours.length-1].to1.insertString(2, 0, ":"):'';
+
+            html_pickup_point = '';
+
+            <?php if(!empty($config['delivery_time'])): ?>
+             html_pickup_point += '<b><?php echo $this->__("Label arrival time pickup:") ?></b><br /><?php echo $config['delivery_time']; ?> <br /><b><?php echo $this->__("Label delivery pickup:") ?></b><br/>';
+            <?php endif;?>
+
+            html_pickup_point += '<div class="aino-pickup-name">' +selectedPoint.name + '</div>';
+            html_pickup_point += '<div class="aino-pickup-address">' + selectedPoint.deliveryAddress.streetName + ', ' + selectedPoint.deliveryAddress.streetNumber + '</div>';
+            html_pickup_point += '<div class="aino-work-hours">' +
+                    '<?php echo $this->__('Mon'); ?>-<?php echo $this->__('Fri'); ?>: '+pickup_point_monFriOpen +' - '+ pickup_point_monFriClose +'<br/>' +
+                    '<?php echo $this->__('Sat'); ?>: '+pickup_point_satOpen +' - '+ pickup_point_satClose +
+                    '</div>';
+
+            var data = {
+                code        :  $('.aino-office-tab').attr('data-code'),
+                data        :   selectedPoint,
+                carrier     : '<?php echo $this->getCarrierTitle()?>',
+                description : selectedPoint.name + ' - ' + selectedPoint.deliveryAddress.streetName + ', ' + selectedPoint.deliveryAddress.streetNumber + ' - ' + selectedPoint.deliveryAddress.postalCode + ' - ID:' + selectedPoint.servicePointId,
+                pointinfo   : html_pickup_point,
+            };
+            $('.aino-office-tab').data('shipping',data);
+            var addresses = $('.address-near-you li');
+            $.each( markers, function( i, v ) {
+                v.set('zIndex',i );
+                v.set('labelClass', "aino-label");
+            });
+            marker.set('zIndex', markers.length +1 );
+            marker.set('labelClass', "aino-label active");
+            
+            $.each( labels, function( i, v ) {
+                v.close();
+            });
+
+            labels[iwIndex].open(map, marker);
+
+            $(addresses[iwIndex]).siblings('li').removeClass('active');
+            $(addresses[iwIndex]).addClass('active');
+            if(scroll){
+                
+//                scrollTo.offset().top - container.offset().top + container.scrollTop()
+                var scrollEl = addresses.parent().parent();
+                var scrollAmount = $(addresses[iwIndex]).offset().top - scrollEl.offset().top + scrollEl.scrollTop();
+                scrollEl.animate({
+                    scrollTop: scrollAmount
+                },200);
+            }
+            
+            if( typeof current_loc !== 'undefined' && direction ){
+                showDirections(map,current_loc,marker.get('position'),'DRIVING');
+                $('.aino-map-container .directions-display-type > button').each(function(){
+                    $(this).unbind('click').on('click', function(){
+                        var type = $(this).attr('role');
+                        showDirections(map,current_loc,marker.get('position'), type);
+                    });
+                });
+            }else{
+                map.fitBounds(bounds);
+            }
+            
+        }
+        
+        function makeMarkerLabel(item){
+            
+            var monFriOpen = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[0].from1.insertString(2, 0, ":"):'';
+            var monFriClose = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[0].to1.insertString(2, 0, ":"):'';
+            var satOpen = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[item.openingHours.length-1].from1.insertString(2, 0, ":"):'';
+            var satClose = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[item.openingHours.length-1].to1.insertString(2, 0, ":"):'';
+        
+            var shippingMethodLogo = '<?php echo $this->getSkinUrl('images/vconnect/aio/aino-postnord-logo.png'); ?>';
+        
+            return new google.maps.InfoWindow({
+                    content:
+                    '<div class="aino-info-window">' +
+                    '<div>' +
+                    '<span><?php echo $this->__('Opening hours'); ?></span>' +
+                    '<img src="'+shippingMethodLogo+'" alt="">' +
+                    '</div>' +
+                    '<div class="aino-work-hours">' +
+                    '<?php echo $this->__('Mon'); ?>-<?php echo $this->__('Fri'); ?>: '+monFriOpen +' - '+ monFriClose +'<br/>' +
+                    '<?php echo $this->__('Sat'); ?>: '+satOpen +' - '+ satClose +
+                    '</div>' +
+                    '</div>'
+                });
+           
+        }
+        
+        function bootstrap(callback) {
+            if (document.head === undefined && document.getElementsByTagName('head').length > 0) {
+                head_element = document.getElementsByTagName('head')[0];
+            } else {
+                head_element = document.head;
+            }
+
+            google_load_script = function() {
+                var script6     = document.createElement('script');
+                script6.type    = 'text/javascript';
+                script6.src     = "<?php echo $this->getSkinUrl('js/vconnect/aio/markerwithlabel.js') ?>";
+
+                // bind the event to the callback function (callback)
+                if(script6.addEventListener) {
+                    script6.addEventListener("load", callback, false); // IE9+, Chrome, Firefox
+                } else if(script6.readyState) {
+                    script6.onreadystatechange = callback; // IE8
+                }
+
+                head_element.appendChild(script6);
+            };
+
+            if (typeof google === 'object' && typeof google.maps === 'object') {
+                console.info('google maps is already here');
+                google_load_script();
+            } else {
+                <?php
+                    $key  = Mage::getStoreConfig('carriers/vconnect_postnord_pickup/google_maps_api_key');
+                    if($key){
+                        $key = ('&key=' . $key);
+                    }
+                ?>
+
+                var script5     = document.createElement('script');
+                script5.type    = 'text/javascript';
+                script5.src     = "//maps.googleapis.com/maps/api/js?libraries=geometry<?php echo $key; ?>" ;
+
+                // bind the event to the callback function (google_load_script)
+                if(script5.addEventListener) {
+                    script5.addEventListener("load", google_load_script, false); // IE9+, Chrome, Firefox
+                } else if(script5.readyState) {
+                    script5.onreadystatechange = google_load_script; // IE8
+                }
+
+                head_element.appendChild(script5);
+            }
+        }
+    });
+</script>

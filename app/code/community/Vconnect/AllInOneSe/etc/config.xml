@@ -1,0 +1,57 @@
+<?xml version="1.0"?>
+
+<config>
+    <modules>
+        <Vconnect_AllInOneSe>
+            <version>1.0.0.0</version>
+        </Vconnect_AllInOneSe>
+    </modules>
+    <global>
+        <blocks>
+             <vc_aio_se>
+                <class>Vconnect_AllInOneSe_Block</class>
+            </vc_aio_se>
+        </blocks>
+        <models>
+            <vc_aio_se>
+                <class>Vconnect_AllInOneSe_Model</class>
+            </vc_aio_se>
+        </models>
+        <helpers>
+            <vc_aio_se>
+                <class>Vconnect_AllInOneSe_Helper</class>
+            </vc_aio_se>
+        </helpers>
+        <resources>
+        </resources>
+        <events>
+            <vconnect_postnord_collect_shipping_methods>
+                <observers>
+                    <vc_aio_se_collect_shipping_methods>
+                        <class>vc_aio_se/observer</class>
+                        <method>collectShippingMethods</method>
+                    </vc_aio_se_collect_shipping_methods>
+                </observers>
+            </vconnect_postnord_collect_shipping_methods>
+        </events>
+    </global>
+    <frontend>
+        <routers>
+        </routers>
+    </frontend>
+    <adminhtml>
+       <layout>
+            <updates>
+            </updates>
+        </layout>
+    </adminhtml>
+    <default>
+        <carriers>
+            <vconnect_postnord_mailbox>
+                <active>0</active>
+                <name>To my mailbox</name>
+                <arrival_option_text>2-3 dagar</arrival_option_text>
+            </vconnect_postnord_mailbox>
+        </carriers>
+    </default>
+</config>

@@ -1,0 +1,63 @@
+<?php 
+$_element = $this->getElement();
+/* @var $_element Varien_Data_Form_Element_Multiselect */
+
+$_htmlId      = $this->getElement()->getHtmlId();
+$_htmlClass   = $this->getElement()->getClass();
+$_htmlName    = $this->getElement()->getName();
+$_readonly    = $this->getElement()->getReadonly();
+$_value       = $this->getElement()->getValue();
+
+?>
+<style>
+    .cst_input{
+        width: 30px;
+        text-align: center;
+    }
+    .cst_input.color{
+        width: 60px;
+    }
+    #<?php echo $_htmlId ?> th{
+        text-align: center;
+    }
+</style>
+<table id="<?php echo $_htmlId ?>" class="<?php echo $_htmlClass ?>">
+    <thead>
+        <tr>
+            <th><?php echo $this->__('Status') ?></th>
+            <th><?php echo $this->__('Color') ?></th>
+            <th><?php echo $this->__('1 hr') ?></th>
+            <th><?php echo $this->__('2 hr') ?></th>
+            <th><?php echo $this->__('4 hr') ?></th>
+            <th><?php echo $this->__('8 hr') ?></th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td><label><?php echo $this->__('Green') ?></label></td>
+            <td><input class="color cst_input" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[0])?$_value[0]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[1])?$_value[1]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[2])?$_value[2]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[3])?$_value[3]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[4])?$_value[4]:'' ?>"></td>
+        </tr>
+        <tr>
+            <td><label><?php echo $this->__('Yellow') ?></label></td>
+            <td><input class="color cst_input" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[5])?$_value[5]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[6])?$_value[6]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[7])?$_value[7]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[8])?$_value[8]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[9])?$_value[9]:'' ?>"></td>
+        </tr>
+        <tr>
+            <td><label><?php echo $this->__('Red') ?></label></td>
+            <td><input class="color cst_input" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[10])?$_value[10]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[11])?$_value[11]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[12])?$_value[12]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[13])?$_value[13]:'' ?>"></td>
+            <td><input class="cst_input <?php echo $_htmlClass?>" name="<?php echo $_htmlName ?>" <?php echo $_readonly?'disabled="disabled"':'' ?> value="<?php echo  isset($_value[14])?$_value[14]:'' ?>"></td>
+        </tr>
+    </tbody>
+</table>
+
+

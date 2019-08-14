@@ -1,0 +1,152 @@
+<?php
+/*
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/dk/home/tabHeader.phtml
+ */
+
+$config = $this->getConfig();
+?>
+
+<li class="aino-business-tab" data-code="<?php echo $this->getCode() ?>">
+    <a href="#your-business" class="cf">
+        <span>
+            <?php echo $this->getMethodTitle() ?>
+            <?php if(!empty($config['delivery_time'])): ?>
+                <em><?php echo $config['delivery_time'] ?></em>
+            <?php endif;?>
+            <div class="aino-delivery-price"><?php echo $this->getPriceFormated() ?></div>
+        </span>
+    </a>
+    <div class="tab-list aino-your-business cf aino-column" data-target="your-business">
+        <div class="aino-inner-tabs cf">
+            <ul class="aino-nav active">
+                <?php if (count($config['arrival'])): ?>
+                    <li class="cf">
+                        <div class="delivery-context">
+                            <p class="aino-tab-sub-title">
+                                <?php echo $this->__("We will arrive") ?>
+                            </p>
+                                <?php $b = $config['arrival'] ?>
+                            <a role='tab' href="#arrival">
+                                <span>
+                                    <?php echo $this->__(array_shift($b)); ?>
+                                    <?php // echo $this->__("Choose delivery form") ?>
+                                </span>
+                            </a>
+                        </div>
+                        
+                        
+                        <div class="tab-list aino-arrival aino-column-2" data-target="arrival">
+                            <div><?php echo $this->__('Choose delivery option commercial arrival') ?> <span class="close"></span></div>
+                            <ul class="aino-nav">
+                                <?php $i = 0; ?>
+                                <?php foreach ($config['arrival'] as $value => $label) : ?>
+                                    <li class="<?php echo ($i == 0) ? 'aino-active' : '' ?>">
+                                        <label class="aino-input aino-checkbox">
+                                            <input type="radio" name="arrival" value="<?php echo $value ?>"  <?php echo ($i == 0) ? 'checked="checked"' : '' ?>>
+                                            <span class="aino-indicator"></span>
+                                            <span class="label-text"><?php echo $this->__($label) ?></span>
+                                        </label>
+                                    </li>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+                            </ul>
+                        </div>
+                    </li>
+                <?php endif; ?>
+
+                <li class="cf">
+                    <?php if (count($config['delivery'])): ?>
+                    <div class="delivery-context">
+                       <div class="aino-tab-sub-title">
+                            <?php echo $this->__('Delivery type') ?>
+                        </div>
+                        <?php $b = $config['delivery'] ?>
+                        <a role='tab' href="#personal-delivery">
+                            <span><?php echo $this->__(array_shift($b)); ?></span>
+                        </a>
+                        <p>
+                            <?php echo $this->__('Please note that small packeges will be delivered directly to your mall box.') ?>
+                        </p>
+
+                        <br />
+                        <div class="aino-textarea-holder">
+                            <?php echo $this->__('Please add the code for yhe outside door in the textbox bellow (if there is):') ?>
+                            <br />
+                            <textarea rows="6" cols="10" name="other" placeholder="<?php echo $this->__('Write place') ?>"></textarea>
+                        </div> 
+                    </div>
+                        <div class="tab-list aino-column-2" data-target="personal-delivery">
+                            <div><?php echo $this->__('Choose delivery option commercial delivery') ?> <span class="close"></span></div>
+                            <ul class="aino-nav">
+                                <?php $i = 0; ?>
+                                <?php foreach ($config['delivery'] as $value => $label): ?>
+                                    <?php if (is_array($label)): ?>
+                                        <li class="aino-sub-nav">
+                                            <a class="aino-collapse" href="javascript:void(0)">
+                                                <?php echo $this->__($value); ?>
+                                            </a>
+                                            <div class="aino-collapse-content">
+                                                <ul class="aino-nav">
+                                                    <?php foreach ($label as $j=>$k): ?>
+                                                        <li class="">
+                                                            <label class="aino-input aino-checkbox">
+                                                                <input type="radio" name="delivery" value="<?php echo is_int($j)?$k:$j ?>">
+                                                                <span class="aino-indicator"></span>
+                                                                <span class="label-text"><?php echo $this->__($k) ?></span>
+                                                            </label>
+                                                        </li>
+                                                    <?php endforeach; ?>
+                                                </ul>
+                                            </div>
+                                        </li>
+                                    <?php else: ?>
+                                        <li class="<?php echo ($i == 0) ? 'aino-active' : '' ?>">
+                                            <label class="aino-input aino-checkbox">
+                                                <input type="radio" name="delivery" value="<?php echo $this->__($value); ?>" <?php echo ($i == 0) ? 'checked="checked"' : '' ?>>
+                                                <span class="aino-indicator"></span>
+                                                <span class="label-text"><?php echo $this->__($label) ?></span>
+                                            </label>
+                                        </li>
+                                    <?php endif; ?>
+                                    <?php $i++; ?>
+                                <?php endforeach; ?>
+
+                            </ul>
+                            
+                        </div>
+                    <?php endif; ?>
+                </li>
+            </ul>
+        </div>
+    </div>
+</li>
+
+
+
+
+

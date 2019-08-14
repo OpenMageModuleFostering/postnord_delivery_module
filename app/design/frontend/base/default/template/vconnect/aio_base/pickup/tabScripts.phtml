@@ -1,0 +1,793 @@
+<?php
+/*
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/dk/home/scripts.phtml
+ */
+
+$config = $this->getConfig();
+?>
+
+
+<script>
+    window.pointsEndpoint = "<?php echo $this->getUrl('aio/index/index', array('_secure' => true))?>";
+    jQuery(function($){
+        $('div[data-code=<?php echo $this->getCode() ?>]').appendTo($('input[value=<?php echo $this->getCode() ?>]').parent());
+    });
+    
+</script>
+<script type="text/javascript">
+   jQuery(function($){
+       
+//       $('button.aio-pick-btn').appendTo($("input[value*='vconnect_postnord_']").parent());
+        var btn = $('button.aio-pick-btn');
+        var submitBtn = $('.aino-button[role=submit]');
+        window.aio_opened = false;
+        //moving the pickup button to the outside container
+        var inputs =  $("input[value*='vconnect_postnord_']");
+        var cont =  inputs.closest('dd');
+        
+        var descriptionField = $('.postnord-description');
+        var hiddenInput = $('input.aio-hidden');
+        if(hiddenInput.val() !== '' && hiddenInput.val()){
+            var data = JSON.parse(hiddenInput.val());
+            descriptionField.text(data.description);
+        }
+        
+        refreshControls();
+        
+        $('.tab-list:first').addClass('active');
+        $('input[name=shipping_method]').on('change',refreshControls);
+        $('.all-in-one-container').hide();
+        if($('body > .all-in-one-container').length < 1){
+            console.log('popup code moved to body');
+            $('.all-in-one-container').appendTo('body');
+        }else{
+            console.log('popup code raplaced');
+            $('body > .all-in-one-container').remove();
+            $('.all-in-one-container').appendTo('body');
+//            $('body > .all-in-one-container').replaceWith($('.wrapper .all-in-one-container'));
+        }
+        //close popup
+        $('.aino-footer button[role=close]').on('click', closePopup);
+        
+//        $('.aino-deliver-to a').first().click(); //select first element
+        //init popup
+        initMobileCollapse();
+        setTabs();
+        setJQueryTabs();
+       
+        btn.on('click',openPopup);
+        
+        function refreshControls() {
+            var div = $('div[data-code=<?php echo $this->getCode() ?>]');
+            var cont = $("input[value='<?php echo $this->getCode() ?>']");
+            console.log(cont);
+            if(cont.is(':checked')){
+                div.show();
+            }else{
+                div.hide();
+            }
+        }
+        function initMobileCollapse(){
+            var collapseBtn = $('.aino-collapse');
+            collapseBtn.each(function(){
+                $(this).unbind('click');
+                $(this).on('click',function(){
+                    var self = this;
+                    $(self).next().animate({
+                        height: "toggle"
+                    }, 'fast', function(){
+                        $(self).toggleClass('active');
+                        var sibl = $(self).parent().siblings();
+                        sibl.each(function(){
+                            $(this).find('.aino-collapse-content').hide();
+                            $(this).find('.aino-collapse').removeClass('active');
+                        });
+                    });
+                });
+            });
+        };
+        submitBtn.on('click',submit);
+        function submit()
+        {
+            var el = $('.aino-deliver-to li.ui-state-active');
+            $('.all-in-one-container').trigger('popup.submit.before',[]);
+            
+            var event = 'submit_before_' + el.attr('data-code');
+            $('.all-in-one-container').trigger(event,[]);
+            console.info("Event trigger: " + event);
+            var data = el.data('shipping');
+            if(typeof data !== 'undefined'){
+                data.environmental_fee = 0;
+                if ($('[name="vconnect_postnord_environmental_fee"]:checked').length != 0) {
+                    data.environmental_fee = 1;
+                }
+
+                $('input[name=vconnect_postnord_data]').val(JSON.stringify(data)) ;
+                if (typeof data.pointinfo !== 'undefined' && data.pointinfo != '') {
+                    $('div.postnord-description').html(data.pointinfo);
+                } else {
+                    $('div.postnord-description').text(data.description);
+                }
+                $('input[value='+data.code+']').prop('checked',true).trigger('change');
+            }
+                
+            $('.all-in-one-container').trigger('popup.submit.after',[]);
+            
+           
+            refreshControls();
+            closePopup();
+        }
+        function openPopup(){
+            
+            console.log('openPopup');
+            var cont = $('.all-in-one-container');
+            cont.trigger({
+                type : 'popup.open.before'
+            });
+//            if($('body > .all-in-one-container').length !== 1){
+//                console.log('appending popup markup to body');
+//                $('.all-in-one-container').appendTo('body');
+//            }
+            if ($('.aino-cover').length === 0) {
+                $('<div/>').addClass('aino-cover').appendTo('body');
+            }
+            $('.aino-container').addClass('opened');
+            $('.all-in-one-container').show();
+            var popup = $('div.aio-container').addClass('opened').show();
+            $('.aino-container').removeClass('opened');
+            
+            popup.find('.aino-container.desktop').addClass('opened').show();
+            
+            $('.all-in-one-container').trigger({
+                type : 'popup.open.after'
+            });
+            window.aio_opened = true;
+            var cont = $('.all-in-one-container');
+            var el  = $('.aino-deliver-to .ui-state-active');
+            var evName = 'tab_visible_' + el.attr('data-code');
+            cont.trigger(evName,[]);
+            console.info('-- trigered tab.visible for ' + evName);
+            
+        }
+        function closePopup()
+        {
+            $('.all-in-one-container').trigger({
+                type : 'popup.close.before'
+            });
+            $('.aino-cover').remove();
+            $('.aino-container').removeClass('opened').hide();
+            $('.all-in-one-container').hide();
+            $('.all-in-one-container').trigger({
+                type : 'popup.close.after'
+            });
+            window.aio_opened = false;
+        }
+       
+        function setTabs(){
+            var tabs = $('.aino-inner-tabs');
+            tabs.each(function(){
+                var self = $(this), target ;
+                var btn = $('a[role=tab]',self);
+                btn.each(function(){
+                    var that = $(this);
+                    
+                    
+                   
+                    that.unbind('click').on('click', function(){
+                        $('.aino-deliver-to .delivery-context').removeClass('active') ;
+                        target = that.attr('href');
+                        target = target.substr(1);
+                        $('.tab-list:not([data-target='+target+'])',tabs).hide();
+                        var col2 = tabs.find('[data-target='+target+']');
+                        
+                        if(self.find('[data-target='+target+']').css('display') === 'none'){
+                            col2.parent().siblings('li').removeClass('active');
+                            col2.show().addClass('active');
+                            col2.parent().addClass('active');
+                            that.parent('li').addClass('active');
+                            that.parent('li').siblings().removeClass('active');
+                        }
+                        else{
+                            col2.parent().siblings('ul').addClass('active');
+                            col2.hide().removeClass('active');
+                            col2.parent().removeClass('active');
+                            that.parent('li').removeClass('active');
+                        }
+                        col2.closest('.aio-nav').siblings().hide().removeClass('active');
+                    });
+                });
+
+                var close = $(this).find('.close');
+                close.each(function(){
+                    $(this).on('click', function(){
+                        setDeactive(self,target);
+                        btn.parent('li').removeClass('active');
+                        $('.aino-deliver-to .delivery-context').addClass('active') ;
+                    });
+                });
+
+                var closeInner = self.find('.close-inner');
+                closeInner.each(function(){
+                    $(this).on('click', function(){
+                        $(this).closest('.delivery-time').hide();
+                        $(this).closest('.delivery-time')
+                            .siblings('.aino-calendar-holder')
+                            .find('.toggle-calendar').hide();
+                        $(this).closest('.delivery-time')
+                            .siblings('.aino-calendar-holder')
+                            .find('.aino-calendar').removeClass('hidden');
+                    });
+                });
+            });
+
+           
+        }
+        function setActive(tabs ,ele, target){
+           $(tabs).find('[data-target='+target+']').parent().siblings('li').removeClass('active');
+           $(tabs).find('[data-target='+target+']').show().addClass('active');
+           $(tabs).find('[data-target='+target+']').parent().addClass('active');
+           $(ele).parent('li').addClass('active');
+           $(ele).parent('li').siblings().removeClass('active');
+       }
+
+        function setDeactive(tabs,target){
+            $(tabs).find('[data-target='+target+']').parent().siblings('ul').addClass('active');
+            $(tabs).find('[data-target='+target+']').hide().removeClass('active');
+            $(tabs).find('[data-target='+target+']').parent().removeClass('active');
+        }
+       function setJQueryTabs(){
+            /*
+                events for switching the outer tabs (buttons on the left)
+                set active tab, show child, and set the others tabs to unactive
+            */
+            $('.aino-deliver-to > li > a').on('click', function(){
+                $('.aino-deliver-to .delivery-context').addClass('active') ;
+                $('.tab-list.aino-column-2').removeClass('active').hide();
+                $('.tab-list.aino-column').removeClass('active');
+                $('.aino-inner-tabs > ul li').removeClass('active');
+                var el = $(this).parent();
+                el.addClass('ui-state-active');
+                el.siblings().removeClass('ui-state-active');
+                $('.aino-deliver-to .tab-list.aino-column').hide().removeClass('active');
+                var activeTab = el.find('.tab-list.aino-column');
+
+                el.trigger({
+                    type : 'tab.click',
+                    tab  : activeTab
+                });
+                activeTab.show().addClass('active');
+
+                if(aio_opened){
+                    var cont = $('.all-in-one-container');
+                    var evName = 'tab_visible_' + el.attr('data-code');
+                    cont.trigger(evName,[]);
+                    console.info('++ trigered tab.visible for ' + evName);
+                }
+                
+            });
+        }
+       
+        
+       
+    });
+</script>   
+<?php echo $this->getChildHtml('body_scripts') ?>
+<script>
+jQuery(function($){
+    
+        var radios = $('input[type=radio][name=delivery]');
+      
+        radios.unbind('change');
+        radios.on('change',function(){
+            var closest = $(this).closest('.aino-inner-tabs');
+            var el =  $('.aino-textarea-holder',closest);
+            if($(this).val() == '<?php echo Mage::helper('vc_aio')->__('Other place'); ?>' || $(this).val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+                el.show();
+            }else{
+                el.hide();
+            }
+        });
+    
+        var liEls = $('.column-2 .aino-nav > li:not(.aino-sub-nav)');
+        liEls.unbind('click');
+        liEls.on('click',function(){
+            var self = $(this);
+            
+            var tabDiv = self.closest('.tab-list.active');
+            var elsToUncheck = $('input',tabDiv) ;
+            $('.aino-deliver-to .delivery-context').addClass('active') ;
+            
+            elsToUncheck.prop('checked',false).attr('checked',false);
+//            self.closest('.tab-list.active input[chekced]').prop('checked',false).attr('checked',false);
+            
+            // console.log($(this).find('label input').val());
+            self.closest('.tab-list.active.column-2').hide().find('li').removeClass('active');
+//            self.closest('.aino-nav').find('li').removeClass('active');
+            self.addClass('active');
+            
+            $('input[type=radio]',self).prop('checked',true).attr('checked',true).trigger('change');
+            var parentTarget = self.parents('.column-2').attr('data-target');
+
+            if(self.find('.aino-nav').length != 0 ){
+                self.unbind('click');
+            }
+            
+            
+            self.closest('.aino-inner-tabs').find("[href=#"+parentTarget+"] span").html(self.find('label .label-text').html());
+
+        });
+    $('.aino-deliver-to > li > a').first().click();
+    
+    
+    
+    
+    
+});
+</script>   
+<script>
+    jQuery(function($){
+         String.prototype.insertString = function(start, delCount, newSubStr) {
+            return this.slice(0, start) + newSubStr + this.slice(start + Math.abs(delCount));
+        };
+        
+        var called = false,labels = [],bounds,markers = [],directionsDisplay,aio_points = [];
+        
+        $('.all-in-one-container').on('tab_visible_<?php echo $this->getCode()?>',function(){
+            
+            if(called){
+                return;
+            }
+            called = true;
+            bootstrap(function(){
+                var shipContryVal = $('select[name="shipping[country_id]"]:last').val();
+                var shipPostcodeVal = $('input[name="shipping[postcode]"]:last').val();
+                var shipStreetVal = $('input[name="shipping[street][]"]:first').val();
+                var billContryVal = $('select[name="billing[country_id]"]:last').val();
+                var billPostcodeVal = $('input[name="billing[postcode]"]:last').val();
+                var billStreetVal = $('input[name="billing[street][]"]:first').val();
+                
+                if (($('#onestepcheckout-form').length > 0 || $('.opc-wrapper-opc').length > 0) && $('input[name="billing[use_for_shipping]"]').length > 0 && $('input[name="billing[use_for_shipping]"]').is(':checked')) {
+                   shipContryVal = '';
+                   shipPostcodeVal = '';
+                   shipStreetVal = '';
+                } else if ($('#one-step-checkout-form').length > 0 && $('input[name="shipping[different_shipping]"]').length > 0 && !$('input[name="shipping[different_shipping]"]').is(':checked')) {
+                   shipContryVal = '';
+                   shipPostcodeVal = '';
+                   shipStreetVal = '';
+                }
+                
+                var country_id  = (shipContryVal !== '')?shipContryVal:billContryVal;
+                var postcode  = (shipPostcodeVal !== '')?shipPostcodeVal:billPostcodeVal;
+                var street  = (shipStreetVal !== '')?shipStreetVal:billStreetVal;
+
+                if (country_id != '' && postcode == '') {
+                    if (country_id == 'SE') {
+                        postcode = '10044';
+                    } else if (country_id == 'FI') {
+                        postcode = '00100';
+                    } else if (country_id == 'NO') {
+                        postcode = '0107';
+                    } else if (country_id == 'DK') {
+                        postcode = '1000';
+                    }
+                }
+
+                var map =   initMap();
+                window.map = map;
+                $('.post-code-input input').val(postcode);
+                $('.post-code-input button').on('click',function(){
+                    console.log('button clicked');
+                    getPickupPoints(country_id,$('.post-code-input input').val(),null,function(points){
+                        setMapContent(map,points,false);
+                    },false);
+                });
+                getPickupPoints(country_id,postcode,street,function(points){
+                     setMapContent(map,points,true);
+                },true);
+            });
+            
+            
+            
+        });
+        $('.all-in-one-container').on('tab.visible',function(target,el){
+            console.log('.post-office 1');
+        });
+//        $('.aino-tabs-body').on('tab.opened.post-office',function(){
+//            
+//              
+//        });
+        
+
+        function initMap() 
+        {
+            // Create a map object and specify the DOM element for display.
+            $('.aino-weather').hide();
+            var center = { lat:58.663585, lng:15.307749 } ;
+            var zoom = 5;
+            if(typeof current_loc !== 'undefined'){
+                center = current_loc;
+                zoom = 8;
+            }
+            window.map = new google.maps.Map($('.aino-map:last')[0], {
+                scrollwheel : true,
+                zoom        : zoom,
+                mapTypeId   : google.maps.MapTypeId.ROADMAP,
+                zoomControl : true,
+                center      : center 
+            });
+            google.maps.event.addListenerOnce(map, 'idle', function(){
+                google.maps.event.trigger(map, 'resize');
+            });
+            $(window).resize(function() {
+                google.maps.event.trigger(map, 'resize');
+            });
+                
+            
+
+            return map;
+            
+        }
+        function showDirections(map, origin, destination, type){
+            if(directionsDisplay != null) {
+                directionsDisplay.setMap(null);
+                directionsDisplay = null;
+            }
+
+            directionsDisplay = new google.maps.DirectionsRenderer({
+                map: map,
+                suppressMarkers: true
+            });
+
+
+            // Set destination, origin and travel mode.
+            var request = {
+                destination: destination,
+                origin: origin,
+                travelMode: google.maps.TravelMode[type]
+            };
+
+
+            // Pass the directions request to the directions service.
+            var directionsService = new google.maps.DirectionsService();
+            directionsService.route(request, function(response, status) {
+                if (status == google.maps.DirectionsStatus.OK) {
+                    // Display the route on the map.
+                    directionsDisplay.setDirections(response);
+                }
+
+                google.maps.event.addListenerOnce(map, 'zoom_changed', function() {
+                    var oldZoom = map.getZoom();
+
+                    if(oldZoom > 14){
+                        map.setZoom(oldZoom - 1);
+                    }
+                    else{
+                        map.setZoom(oldZoom);
+                    }
+                });
+            });
+
+            return directionsDisplay;
+        }
+        function getPickupPoints(country_id,postcode,street,callback,shouldGoecode)
+        {
+            console.log('getPickupPoints called');
+
+            try{
+                delete window.current_loc;
+            }catch(e){}
+
+            if(street && shouldGoecode){
+                var geocoder = new google.maps.Geocoder();
+                geocoder.geocode({
+                    address: street + ',' + postcode + ',' + country_id
+                }, function(results, status) {
+                    if (status == google.maps.GeocoderStatus.OK) {
+                        $.each( results, function( i, v ) {
+                            if(typeof v.partial_match === 'undefined' || !v.partial_match){
+                                window.current_loc = v.geometry.location;
+                            }
+                        });
+                    } 
+                });
+            }
+            var dataToSend = {
+                country_id  : country_id,
+                postcode    : postcode
+            };
+            if(street){
+                dataToSend.street = street;
+            }
+            $.ajax({
+                url     : pointsEndpoint,
+                data    : dataToSend
+            }).done(function (data) {
+
+                if( typeof data.postnord.servicePointInformationResponse === 'undefined')
+                {
+                    if( typeof data.postnord.message !== 'undefined'){
+                        console.error(data.postnord.message);
+                    }
+                    return console.log('Pickup api\'s return unknown error');
+                }
+                aio_points = data.postnord.servicePointInformationResponse.servicePoints;
+                if(callback) {
+                    callback(aio_points);
+                }
+            });
+        }
+        
+        
+        
+        function setMapContent(map,points,direction)
+        {
+            labels = [];
+
+            $.each( markers, function( i, v ) {
+                v.setMap(null);
+            });
+
+            markers = [];
+            
+            bounds = new google.maps.LatLngBounds();
+            var container = $('.address-near-you .aino-nav').empty();
+            var x = 1;
+            var image = {
+                url:  '<?php echo $this->getSkinUrl('images/vconnect/aio/temp.png') ?>',
+                size: new google.maps.Size(20, 40)
+            };
+            points.sort(function(a,b){
+                return a.routeDistance - b.routeDistance;
+            });  
+            locations = [];
+
+            $.each( points, function( i, v ) {
+                var location  = new google.maps.LatLng(v.coordinate.northing, v.coordinate.easting);
+                locations.push(location);
+                labels.push(makeMarkerLabel(v));
+                var marker = new MarkerWithLabel({
+                    map: map,
+                    icon: image,
+                    zIndex: i,
+                    labelContent: (x).toString(),
+                    labelClass: "aino-label",
+                    labelAnchor: new google.maps.Point(14, 46),
+                    position: location,
+                    labelStyle: {'display': 'block', height:'50px'}
+                });
+                markers.push(marker);
+                marker.addListener('click', function () {
+                    setActiveMapComponent(map,marker,true,direction);
+                });
+                var listItem = $('<li></li>').on('click',function(){
+                    setActiveMapComponent(map,marker,false,direction);
+                });
+                var distanceElement = $('<div class="aino-distance"><span></span></div>');
+                distanceElement.find('span').text((v.routeDistance/1000).toFixed(1) + ' km');
+
+                // openingHours
+                v_html_pickup_point = '';
+                v_pickup_point_monFriOpen = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[0].from1.insertString(2, 0, ":"):'';
+                v_pickup_point_monFriClose = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[0].to1.insertString(2, 0, ":"):'';
+                v_pickup_point_satOpen = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[v.openingHours.length-1].from1.insertString(2, 0, ":"):'';
+                v_pickup_point_satClose = (typeof v.openingHours !== 'undefined')
+                        ?v.openingHours[v.openingHours.length-1].to1.insertString(2, 0, ":"):'';
+
+                if (v_pickup_point_monFriOpen || v_pickup_point_monFriClose) {
+                    v_html_pickup_point = '<div class="aino-open-hours">' +
+                        '<?php echo $this->__('Open hours:'); ?> ' + v_pickup_point_monFriOpen +' - '+ v_pickup_point_monFriClose +'<br/>' +'</div>';
+                } else if (v_pickup_point_satOpen || v_pickup_point_satClose) {
+                    v_html_pickup_point = '<div class="aino-open-hours">' +
+                        '<?php echo $this->__('Open hours:'); ?> ' + v_pickup_point_satOpen +' - '+ v_pickup_point_satClose +'</div>';
+                }
+
+                var addressItem = $('<div class="cf"></div>')
+                        
+                            .append(distanceElement)
+                            .append($('<div class="aino-index">' + x + '</div>'))
+                            .append($('<div class="aino-title">' + v.name + '</div>'))
+                            .append(
+                                $('<div class="aino-address">' + v.deliveryAddress.streetName + ' ' + v.deliveryAddress.streetNumber + '<br />' + v.deliveryAddress.postalCode + ' ' +v.deliveryAddress.city + ' </div>')
+                            )
+                            .append(v_html_pickup_point)
+                        ;
+                
+                
+                
+                
+                var shell = $('<div class="cf"></div>');
+                shell.append($('<label class="aino-input aino-checkbox"></label>')
+                        .append($('<input type="radio" name="delivery" value="">'))
+                        .append($('<span class="aino-indicator"></span>'))
+                        .append(addressItem)
+                    );
+                shell.appendTo(listItem.appendTo(container));
+                
+                
+                
+                
+                bounds.extend(location);
+                x++;
+            });
+           
+            map.fitBounds(bounds);
+        }
+        
+        function setActiveMapComponent(map, marker, scroll,direction){
+            var iwIndex = parseInt(marker.get('labelContent')) - 1;
+            var selectedPoint = aio_points[iwIndex];
+
+            pickup_point_monFriOpen = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[0].from1.insertString(2, 0, ":"):'';
+            pickup_point_monFriClose = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[0].to1.insertString(2, 0, ":"):'';
+            pickup_point_satOpen = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[selectedPoint.openingHours.length-1].from1.insertString(2, 0, ":"):'';
+            pickup_point_satClose = (typeof selectedPoint.openingHours !== 'undefined')
+                    ?selectedPoint.openingHours[selectedPoint.openingHours.length-1].to1.insertString(2, 0, ":"):'';
+
+            html_pickup_point = '';
+
+            <?php if(!empty($config['delivery_time'])): ?>
+             html_pickup_point += '<b><?php echo $this->__("Label arrival time pickup:") ?></b><br /><?php echo $config['delivery_time']; ?> <br /><b><?php echo $this->__("Label delivery pickup:") ?></b><br/>';
+            <?php endif;?>
+
+            html_pickup_point += '<div class="aino-pickup-name">' +selectedPoint.name + '</div>';
+            html_pickup_point += '<div class="aino-pickup-address">' + selectedPoint.deliveryAddress.streetName + ', ' + selectedPoint.deliveryAddress.streetNumber + '</div>';
+            html_pickup_point += '<div class="aino-work-hours">' +
+                    '<?php echo $this->__('Mon'); ?>-<?php echo $this->__('Fri'); ?>: '+pickup_point_monFriOpen +' - '+ pickup_point_monFriClose +'<br/>' +
+                    '<?php echo $this->__('Sat'); ?>: '+pickup_point_satOpen +' - '+ pickup_point_satClose +
+                    '</div>';
+
+            var data = {
+                code        :  $('.aino-office-tab').attr('data-code'),
+                data        :   selectedPoint,
+                carrier     : '<?php echo $this->getCarrierTitle()?>',
+                description : selectedPoint.name + ' - ' + selectedPoint.deliveryAddress.streetName + ', ' + selectedPoint.deliveryAddress.streetNumber + ' - ' + selectedPoint.deliveryAddress.postalCode + ' - ID:' + selectedPoint.servicePointId,
+                pointinfo   : html_pickup_point,
+            };
+            $('.aino-office-tab').data('shipping',data);
+            var addresses = $('.address-near-you li');
+            $.each( markers, function( i, v ) {
+                v.set('zIndex',i );
+                v.set('labelClass', "aino-label");
+            });
+
+            marker.set('zIndex', markers.length +1 );
+            marker.set('labelClass', "aino-label active");
+
+            $.each( labels, function( i, v ) {
+                v.close();
+            });
+
+            labels[iwIndex].open(map, marker);
+
+            $(addresses[iwIndex]).siblings('li').removeClass('active');
+            $(addresses[iwIndex]).addClass('active');
+            if(scroll){
+                var scrollEl = addresses.parent().parent();
+                var scrollAmount = $(addresses[iwIndex]).offset().top - scrollEl.offset().top + scrollEl.scrollTop();
+                scrollEl.animate({
+                    scrollTop: scrollAmount
+                },200);
+            }
+            
+            if( typeof current_loc !== 'undefined' && direction ){
+                showDirections(map,current_loc,marker.get('position'),'DRIVING');
+                $('.aino-map-container .directions-display-type > button').each(function(){
+                    $(this).unbind('click').on('click', function(){
+                        var type = $(this).attr('role');
+                        showDirections(map,current_loc,marker.get('position'), type);
+                    });
+                });
+            }else{
+                map.fitBounds(bounds);
+            }
+        }
+        
+        function makeMarkerLabel(item){
+            
+            var monFriOpen = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[0].from1.insertString(2, 0, ":"):'';
+            var monFriClose = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[0].to1.insertString(2, 0, ":"):'';
+            var satOpen = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[item.openingHours.length-1].from1.insertString(2, 0, ":"):'';
+            var satClose = (typeof item.openingHours !== 'undefined')
+                ?item.openingHours[item.openingHours.length-1].to1.insertString(2, 0, ":"):'';
+        
+            var shippingMethodLogo = '<?php echo $this->getSkinUrl('images/vconnect/aio/aino-postnord-logo.png'); ?>';
+            
+            return new google.maps.InfoWindow({
+                    content:
+                    '<div class="aino-info-window">' +
+                    '<div>' +
+                    '<span><?php echo $this->__('Opening hours'); ?></span>' +
+                    '<img src="'+shippingMethodLogo+'" alt="">' +
+                    '</div>' +
+                    '<div class="aino-work-hours">' +
+                    '<?php echo $this->__('Mon'); ?>-<?php echo $this->__('Fri'); ?>: '+monFriOpen +' - '+ monFriClose +'<br/>' +
+                    '<?php echo $this->__('Sat'); ?>: '+satOpen +' - '+ satClose +
+                    '</div>' +
+                    '</div>'
+                });
+           
+        }
+        
+        function bootstrap(callback) {
+            if (document.head === undefined && document.getElementsByTagName('head').length > 0) {
+                head_element = document.getElementsByTagName('head')[0];
+            } else {
+                head_element = document.head;
+            }
+
+            google_load_script = function() {
+                var script6     = document.createElement('script');
+                script6.type    = 'text/javascript';
+                script6.src     = "<?php echo $this->getSkinUrl('js/vconnect/aio/markerwithlabel.js') ?>";
+
+                // bind the event to the callback function (callback)
+                if(script6.addEventListener) {
+                    script6.addEventListener("load", callback, false); // IE9+, Chrome, Firefox
+                } else if(script6.readyState) {
+                    script6.onreadystatechange = callback; // IE8
+                }
+
+                head_element.appendChild(script6);
+            };
+
+            if (typeof google === 'object' && typeof google.maps === 'object') {
+                console.info('google maps is already here');
+                google_load_script();
+            } else {
+                <?php
+                    $key  = Mage::getStoreConfig('carriers/vconnect_postnord_pickup/google_maps_api_key');
+                    if($key){
+                        $key = ('&key=' . $key);
+                    }
+                ?>
+
+                var script5     = document.createElement('script');
+                script5.type    = 'text/javascript';
+                script5.src     = "//maps.googleapis.com/maps/api/js?libraries=geometry<?php echo $key; ?>" ;
+
+                // bind the event to the callback function (google_load_script)
+                if(script5.addEventListener) {
+                    script5.addEventListener("load", google_load_script, false); // IE9+, Chrome, Firefox
+                } else if(script5.readyState) {
+                    script5.onreadystatechange = google_load_script; // IE8
+                }
+
+                head_element.appendChild(script5);
+            }
+        }
+    });
+</script>

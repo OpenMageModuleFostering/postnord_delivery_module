@@ -1,0 +1,184 @@
+<?php
+
+/* 
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/base.phtml
+ */
+
+/* @var $this Vconnect_AllInOne_Block_Shipping_Dialog */
+?>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-1.11.3.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-ui.js') ?>"></script>
+<script type="text/javascript">
+    jQuery.noConflict();
+</script>
+
+<?php 
+$rates = $this->getRates();
+/* @var $rates Mage_Sales_Model_Resource_Quote_Address_Rate_Collection */
+?>
+<input class="aio-hidden" id="payment_ain_vconnect_postnord_data" name="payment_ain_vconnect_postnord_data" value='' style="display: none;">
+
+<?php
+$vconnect_postnord_data = Mage::getSingleton('adminhtml/session_quote')->getQuote()->getVconnectPostnordData();
+if (!empty($vconnect_postnord_data)) {
+    $vconnect_postnord_data = json_decode($vconnect_postnord_data);
+}
+?>
+
+<?php echo $this->getChildHtml('tab_headers') ?>
+<script type="text/javascript">
+    (function(d, id){
+        if (d.getElementById(id)) {
+            return;
+        }
+        var css = d.createElement('link');
+        css.id      = id;
+        css.type    ='text/css';
+        css.href    = "https://fonts.googleapis.com/css?family=Roboto:400,700,800";
+        css.rel     = "stylesheet";
+        d.head.appendChild(css);
+        
+        var css1    = d.createElement('link');
+        css1.type   = 'text/css';
+//        css1.href   = "<?php echo $this->getSkinUrl("css/vconnect/aio/{$this->getColor()}.css") ?>";
+        css1.href   = "<?php echo $this->getSkinUrl("css/vconnect/aio/blue.css") ?>";
+        css1.rel    = "stylesheet";
+        d.head.appendChild(css1);
+   }(document, 'vconnect_postnord_scripts'));
+</script>
+<?php echo $this->getChildHtml('body_scripts') ?>
+
+<?php if (Mage::getStoreConfigFlag('carriers/vconnect_postnord/environmental_fee')): ?>
+<div id="environmental_fee" style="display: none;">
+    <label class="aino-custom-input cf">
+        <span class="aino-custom-input-text">
+            <?php echo $this->__('Environmental fee'); ?>
+            <div class="aino-delivery-price"><span class="price"><?php echo Mage::getSingleton('checkout/session')->getQuote()->getStore()->convertPrice((float)10, true, true); ?></span></div>
+        </span>
+        <input type="checkbox" name="vconnect_postnord_environmental_fee" value="1" <?php if(!empty($vconnect_postnord_data->environmental_fee)) { ?> checked="checked" <?php } ?>  />
+        <span class="aino-custom-checkbox-indicator"></span>
+    </label>
+</div>
+<?php endif; ?>
+
+<script type="text/javascript">
+   jQuery(function($){
+       if ($('#environmental_fee').length != 0 && $('#order-shipping-method-choose').length != 0) {
+           $('#environmental_fee').insertBefore( "#aio_shipping_save" );
+       }
+
+       $('input[name="order[shipping_method]"]').each(function(){
+           var self = $(this);
+           if(self.is(':checked') && self.val().indexOf('vconnect_postnord_') != -1){
+               $('.aio-options[data-code='+self.val()+']').addClass('active');
+               if ($('#environmental_fee').length != 0) {
+                   $('#environmental_fee').show();
+               }
+           }
+       });
+       $('select[name*="_delivery"]').each(function(){
+           console.log(this);
+           var self = $(this);
+           var txtArea = $('textarea.other-txt',self.parent());
+           if(self.val() === '<?php echo Mage::helper('vc_aio')->__('Other place'); ?>' || self.val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+               txtArea.show();
+           }else{
+               txtArea.hide();
+           }
+       });
+       
+       
+       $('input[name="order[shipping_method]"]').on('change',function(){
+           if ($('#environmental_fee').length != 0) {
+               $('#environmental_fee').hide();
+           }
+
+           $('.aio-options').removeClass('active');
+           var self = $(this);
+           if(self.val().indexOf('vconnect_postnord_') != -1){
+               $('.aio-options[data-code='+self.val()+']').addClass('active');
+
+               if ($('#environmental_fee').length != 0) {
+                   $('#environmental_fee').show();
+               }
+           }
+           if(self.val().indexOf('_pickup') != -1){
+               $('.aio-hidden').show();
+           }else{
+               $('.aio-hidden').hide();
+           }
+           
+           if ($('.aio-options[data-code='+self.val()+'] select[name*="_arrival"]').length) {
+               $('.aio-options[data-code='+self.val()+'] select[name*="_arrival"]').trigger('change');
+           }
+
+       });
+       
+       $('select[name*="_delivery"]').on('change',function(){
+           var self = $(this);
+           var txtArea = self.parent().find('textarea');
+           if(self.val() === '<?php echo Mage::helper('vc_aio')->__('Other place'); ?>' || self.val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+               txtArea.show();
+           }else{
+               txtArea.hide();
+           }
+       });
+
+        <?php
+        if ($rates) { 
+            foreach ($rates as $rate) {
+                if (empty($rate['code']) || empty($rate['vc_method_data'])) {
+                    continue;
+                }
+
+                $method_code = $rate['code'];
+                $method_data = json_decode($rate['vc_method_data']);
+                
+                if ($method_data && $method_data->delivery_time) {
+                ?>
+                   $('input[name="order[shipping_method]"]').each(function(){
+                       if($(this).val() == '<?php echo $method_code; ?>'){
+                           $(this).parent().find('span.price').before('<span class="transit_time"> <?php echo $method_data->delivery_time; ?> </span>');
+                       }
+                   });
+                <?php
+                }
+            }
+        }
+        ?>
+
+        // postcode reload - fix for Magestore_Onestepcheckoud
+        if ($('#one-step-checkout-form').length > 0 && typeof save_address_information !== 'undefined' && typeof save_address_url !== 'undefined' && typeof update_address_shipping !== 'undefined' && typeof update_address_payment !== 'undefined' && typeof update_address_review !== 'undefined') {
+            $('[name="billing[postcode]"],[name="shipping[postcode]"]').change(function () {
+                save_address_information(save_address_url, update_address_shipping, update_address_payment, update_address_review);
+            });
+        }
+   });
+</script>   
+

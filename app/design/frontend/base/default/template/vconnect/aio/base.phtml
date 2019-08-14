@@ -1,0 +1,595 @@
+<?php
+
+/* 
+ * The MIT License
+ *
+ * Copyright 2016 vConnect.dk
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ * @category Magento
+ * @package Vconnect_AllInOne
+ * @author vConnect
+ * @email kontakt@vconnect.dk
+ * @template app/design/frontend/base/default/template/vconnect/aio/base.phtml
+ */
+
+/* @var $this Vconnect_AllInOne_Block_Shipping_Dialog */
+?>
+
+<!--[if IE 8]>
+<link rel="stylesheet" type="text/css" href="<?php echo $this->getSkinUrl("css/vconnect/aio/blue_ie8.css") ?>" media="all" />
+<![endif]-->
+
+<?php
+$rates = $this->getRates();
+/* @var $rates Mage_Sales_Model_Resource_Quote_Address_Rate_Collection */
+?>
+<input class="required-entry aio-hidden" name="vconnect_postnord_data" value='<?php echo $this->getShippingInfo() ?>' style="width: 1px; height: 1px;">
+<input class="aio-hidden" name="payment_ain_vconnect_postnord_data" value='' style="display: none;">
+
+<div class="all-in-one-container">
+    <div class="aio-container">
+        <div class="aino-container desktop">
+            <div class="aino-core">
+                <div class="aino-header cf">
+                    <h1 class="postnord-logo">
+                        <span><?php echo Mage::getStoreConfig('carriers/vconnect_postnord/title') ?></span>
+                    </h1>
+
+                    <div class="aino-weather cf">
+                        <ul class="aino-nav">
+
+                        </ul>
+                    </div>
+                </div>
+                <div class="aino-tabs cf">
+                    <ul class="aino-nav aino-deliver-to">
+                        <?php echo $this->getChildHtml('tab_headers') ?>
+                    </ul>
+                </div>
+                <div class="aino-footer">
+                    <?php if (Mage::getStoreConfigFlag('carriers/vconnect_postnord/environmental_fee')): ?>
+                        <div>
+                            <label class="aino-custom-input cf">
+                            <span class="aino-custom-input-text">
+                                <?php echo $this->__('Environmental fee'); ?>
+                                <span class="aino-env-free-help">
+                                    <span class="aino-env-free-help-icon">?</span>
+                                    <span class="aino-env-fee-info-popup">
+                                         <span><?php echo $this->__("Your 10 crowns will go to projects certified by the UN. The projects aim to replace fossil energy production in developing countries with renewable energy. The projects are also certified according to the Gold Standard, which involves additional requirements on social responsibility and sustainable development. You can read more about carbon offsetting and PostNord's sustainability work on postnord.com");?></span>
+                                    </span>
+                                </span>
+                                <span class="aino-delivery-price"><span class="price">+<?php echo Mage::getSingleton('checkout/session')->getQuote()->getStore()->convertPrice((float)10, true, true); ?></span></span>
+                                <i><?php echo $this->__('By paying 10 crowns carbon offsets for my delivery and contribute to the transition to renewable energy.'); ?></i>
+
+                            </span>
+                                <input type="checkbox" name="vconnect_postnord_environmental_fee" value="1" />
+                                <span class="aino-custom-checkbox-indicator"></span>
+                            </label>
+                        </div>
+                    <?php endif; ?>
+
+                    <div>
+                        <button type="button" class="aino-button gray" role="close" >
+                            <?php echo $this->__('Cancel') ?>
+                        </button>
+                        <button type="button" class="aino-button blue" role="submit">
+                            <?php echo $this->__('OK') ?>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<div class="postnord-description" style="display: none;"></div>
+<button type="button" class="aio-pick-btn">
+    <?php echo Mage::getStoreConfig('carriers/vconnect_postnord/button_label') ?>
+</button>
+
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-1.11.3.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/jquery-ui.js') ?>"></script>
+<script type="text/javascript" src="<?php echo $this->getSkinUrl('js/vconnect/aio/simulate.js') ?>"></script>
+<script type="text/javascript">
+    jQuery.noConflict();
+</script>
+
+<script type="text/javascript">
+    (function(d, id){
+        if (d.getElementById(id)) {
+            return;
+        }
+        if (d.head === undefined && document.getElementsByTagName('head').length > 0) {
+            head_element = document.getElementsByTagName('head')[0];
+        } else {
+            head_element = d.head;
+        }
+        var css = d.createElement('link');
+        css.id      = id;
+        css.type    ='text/css';
+        css.href    = "https://fonts.googleapis.com/css?family=Roboto:400,700,800";
+        css.rel     = "stylesheet";
+        head_element.appendChild(css);
+
+        var css1    = d.createElement('link');
+        css1.type   = 'text/css';
+//        css1.href   = "<?php echo $this->getSkinUrl("css/vconnect/aio/{$this->getColor()}.css") ?>";
+        css1.href   = "<?php echo $this->getSkinUrl("css/vconnect/aio/blue.css") ?>";
+        css1.rel    = "stylesheet";
+        head_element.appendChild(css1);
+    }(document, 'vconnect_postnord_scripts' ));
+
+    if (typeof console === "undefined" || typeof console.log === "undefined") {
+        console = {};
+        console.log = function() {};
+        console.info = function() {};
+    }
+
+   function InitAioBaseScripts() {
+        var $ = jQuery;
+
+        <?php if ($this->getChildHtml('body_scripts') == '') { ?>
+            // Start fixer for Onestepcheckout
+            if ($('#onestepcheckout-form').length > 0) {
+                // reload shipping methods section - fixer for IWD_OPC
+                get_save_billing_function('<?php echo $this->getUrl('onestepcheckout/ajax/save_billing', array('_secure'=>true)); ?>', '<?php echo $this->getUrl('onestepcheckout/ajax/set_methods_separate', array('_secure'=>true)); ?>', true, true)();
+            }
+            // End fixer for Onestepcheckout
+        <?php } ?>
+
+       <?php if (Mage::app()->getRequest()->getControllerModule() == 'Avenla_KlarnaCheckout'): ?>
+       var aio_shipping_method_name = 'estimate_method';
+       <?php else: ?>
+       var aio_shipping_method_name = 'shipping_method';
+       <?php endif; ?>
+
+//       $('button.aio-pick-btn').appendTo($("input[value*='vconnect_postnord_']").parent());
+        var btn = $('button.aio-pick-btn');
+        var submitBtn = $('.aino-button[role=submit]');
+        window.aio_opened = false;
+        //moving the pickup button to the outside container
+        var inputs =  $("input[value*='vconnect_postnord_']:not(.aio-hidden)");
+        var cont =  inputs.closest('dd');
+        cont.append(btn);
+        var descriptionField = $('.postnord-description');
+        $('.aio-pick-btn').before($('.postnord-description'));
+        var hiddenInput = $('input.aio-hidden');
+        cont.append(hiddenInput);
+        if(hiddenInput.val() !== '' && hiddenInput.val()){
+            var data = JSON.parse(hiddenInput.val());
+            if (typeof data.pointinfo !== 'undefined' && data.pointinfo != '') {
+                $('div.postnord-description').html(data.pointinfo);
+            } else {
+                $('div.postnord-description').text(data.description);
+            }
+        }
+
+        refreshControls();
+
+        $('.tab-list:first').addClass('active');
+        $('input[name=' + aio_shipping_method_name + ']').on('change',refreshControls);
+        $('.all-in-one-container').hide();
+        if($('body > .all-in-one-container').length < 1){
+            console.log('popup code moved to body');
+            $('.all-in-one-container').appendTo('body');
+        }else{
+            console.log('popup code raplaced');
+            $('body > .all-in-one-container').remove();
+            $('.all-in-one-container').appendTo('body');
+//            $('body > .all-in-one-container').replaceWith($('.wrapper .all-in-one-container'));
+        }
+        //close popup
+        $('.aino-footer button[role=close]').on('click', closePopup);
+
+//        $('.aino-deliver-to a').first().click(); //select first element
+        //init popup
+        initMobileCollapse();
+        setTabs();
+        setJQueryTabs();
+
+        var weather_shipContryVal = $('select[name="shipping[country_id]"]:last').val();
+        var weather_shipPostcodeVal = $('input[name="shipping[postcode]"]:last').val();
+        var weather_billContryVal = $('select[name="billing[country_id]"]:last').val();
+        var weather_billPostcodeVal = $('input[name="billing[postcode]"]:last').val();
+
+        if (($('#onestepcheckout-form').length > 0 || $('.opc-wrapper-opc').length > 0) && $('input[name="billing[use_for_shipping]"]').length > 0 && $('input[name="billing[use_for_shipping]"]').is(':checked')) {
+            weather_shipContryVal = '';
+            weather_shipPostcodeVal = '';
+        }
+
+        var weather_country_id = (weather_shipContryVal !== '')?weather_shipContryVal:weather_billContryVal;
+        var weather_postcode = (weather_shipPostcodeVal !== '')?weather_shipPostcodeVal:weather_billPostcodeVal;
+
+        <?php if($this->isWeatherOn()):?>
+        weatherInit(
+            weather_country_id,
+            weather_postcode,
+            '<?php echo $this->getWatherApiKey()?>'
+        );
+        <?php endif;?>
+        btn.on('click',openPopup);
+
+        function refreshControls() {
+            var inputs = $("input[value*='vconnect_postnord_']:not(.aio-hidden)");
+            $('div.postnord-description').show();
+            var unseleted = inputs.not(":checked");
+            unseleted.parent().hide();
+            var selected  = inputs.filter(":checked");
+            if(selected.length === 0){
+                $('input.aio-hidden').val('').hide();
+                $('div.postnord-description').hide();
+            }else{
+                $('input.aio-hidden').show();
+            }
+            selected.parent().show();
+        }
+        function initMobileCollapse(){
+            var collapseBtn = $('.aino-collapse');
+            collapseBtn.each(function(){
+                $(this).unbind('click');
+                $(this).on('click',function(){
+                    var self = this;
+                    $(self).next().animate({
+                        height: "toggle"
+                    }, 'fast', function(){
+                        $(self).toggleClass('active');
+                        var sibl = $(self).parent().siblings();
+                        sibl.each(function(){
+                            $(this).find('.aino-collapse-content').hide();
+                            $(this).find('.aino-collapse').removeClass('active');
+                        });
+                    });
+                });
+            });
+        };
+        submitBtn.on('click',submit);
+        function submit()
+        {
+            var el = $('.aino-deliver-to li.ui-state-active');
+            $('.all-in-one-container').trigger('popup.submit.before',[]);
+
+            var event = 'submit_before_' + el.attr('data-code');
+            $('.all-in-one-container').trigger(event,[]);
+            console.info("Event trigger: " + event);
+
+            var data = el.data('shipping');
+
+            if(typeof data !== 'undefined'){
+                data.environmental_fee = 0;
+                if ($('[name="vconnect_postnord_environmental_fee"]:checked').length != 0) {
+                    data.environmental_fee = 1;
+                }
+                $('input[name=vconnect_postnord_data]').val(JSON.stringify(data)) ;
+
+                if (typeof data.pointinfo !== 'undefined' && data.pointinfo != '') {
+                    $('div.postnord-description').html(data.pointinfo);
+                } else {
+                    $('div.postnord-description').text(data.description);
+                }
+
+                // Start fixer for IWD_OPC
+                if (typeof IWD !== 'undefined' && typeof IWD.OPC !== 'undefined' && typeof IWD.OPC.Shipping !== 'undefined' && typeof IWD.OPC.Checkout !== 'undefined' && IWD.OPC.Checkout.isVirtual === false) {
+                    IWD.OPC.Shipping.saveShippingMethod();
+                }
+                // End fixer for IWD_OPC
+
+                // Start fixer for Onestepcheckout (Both trigger clicks for reload total section)
+                if ($('#onestepcheckout-form').length > 0) {
+                    $('input[name=payment_ain_vconnect_postnord_data]').val(JSON.stringify(data));
+                    $('#onestepcheckout-form input[name="payment[method]"]:checked').trigger('click');
+                    setTimeout(function(){ $('#onestepcheckout-form input[name="payment[method]"]:checked').trigger('click'); }, 900);
+                }
+                // End fixer for Onestepcheckout (Both trigger clicks for reload total section)
+
+                <?php if (Mage::app()->getRequest()->getControllerModule() == 'Avenla_KlarnaCheckout'): ?>
+                // Start fixer for KlarnaCheckout
+                $('input[name=payment_ain_vconnect_postnord_data]').val(JSON.stringify(data));
+                // End fixer for KlarnaCheckout
+                <?php endif; ?>
+
+                $('input[value='+data.code+']').prop('checked',true).trigger('change');
+            }
+
+            <?php if (Mage::app()->getRequest()->getControllerModule() == 'Avenla_KlarnaCheckout'): ?>
+            // Start fixer for KlarnaCheckout
+            $$('input:checked[name="estimate_method"]')[0].simulate('click');
+            // End fixer for KlarnaCheckout
+            <?php endif; ?>
+
+            $('.all-in-one-container').trigger('popup.submit.after',[]);
+            btn.text('<?php echo Mage::getStoreConfig('carriers/vconnect_postnord/button_label_active') ?>');
+//            refreshControls();
+            closePopup();
+        }
+        function openPopup(){
+
+            console.log('openPopup');
+            var cont = $('.all-in-one-container');
+            cont.trigger({
+                type : 'popup.open.before'
+            });
+//            if($('body > .all-in-one-container').length !== 1){
+//                console.log('appending popup markup to body');
+//                $('.all-in-one-container').appendTo('body');
+//            }
+            if ($('.aino-cover').length === 0) {
+                $('<div/>').addClass('aino-cover').appendTo('body');
+            }
+            $('.aino-container').addClass('opened');
+            $('.all-in-one-container').css({
+                'z-index'   : 10000000,
+                'position'  : "relative"
+            }).show();
+            var popup = $('div.aio-container').addClass('opened').show();
+            $('.aino-container').removeClass('opened');
+
+            popup.find('.aino-container.desktop').addClass('opened').show();
+
+            $('.all-in-one-container').trigger({
+                type : 'popup.open.after'
+            });
+            window.aio_opened = true;
+            var cont = $('.all-in-one-container');
+            var el  = $('.aino-deliver-to .ui-state-active');
+            var evName = 'tab_visible_' + el.attr('data-code');
+            cont.trigger(evName,[]);
+            console.info('-- trigered tab.visible for ' + evName);
+
+        }
+        function closePopup()
+        {
+            $('.all-in-one-container').trigger({
+                type : 'popup.close.before'
+            });
+            $('.aino-cover').remove();
+            $('.aino-container').removeClass('opened').hide();
+            $('.all-in-one-container').hide();
+            $('.all-in-one-container').trigger({
+                type : 'popup.close.after'
+            });
+            window.aio_opened = false;
+        }
+        function weatherInit(zip,countryCode,apiKey){
+            var days = [
+                '<?php echo $this->__("Sun");?>',
+                '<?php echo $this->__("Mon");?>',
+                '<?php echo $this->__("Tue");?>',
+                '<?php echo $this->__("Wed");?>',
+                '<?php echo $this->__("Thu");?>',
+                '<?php echo $this->__("Fri");?>',
+                '<?php echo $this->__("Sat");?>'
+            ];
+            $.ajax({
+                dataType: 'jsonp',
+                url     : 'http://api.openweathermap.org/data/2.5/forecast/daily',
+                data    : {
+                    zip     : zip+','+countryCode,
+                    APPID   : apiKey,
+                    mode    : 'json'
+                }
+
+            }).done( function( data ) {
+                if(typeof data.list == 'undefined'){
+                    return console.error(data);
+                }
+                $('.aino-weather').each(function(){
+                    var self = $(this);
+                    if(self.find('ul li').length === 0){
+                        var container = self.find('ul');
+                        var icon;
+                        var temp;
+                        var listItem;
+                        for(var x = 0 ; x < 5; x++){
+                            var date = (new Date().getDay() + x) <= 6 ? new Date().getDay() + x :(new Date().getDay() + x) - 7 ;
+                            icon = $('<div class="weather-icon"></div>')
+                                .append('<img src="<?php echo $this->getSkinUrl('images/vconnect/aio/weather-icons/') ?>'+ data.list[x].weather[0].icon.replace('n', 'd') + '.png">');
+                            temp = $('<div class="weather-temp-day"></div>')
+                                .append('<span class="aion-weather-day">'+ days[date] +'</span>')
+                                .append('<span class="aion-weather-temp">'+ (parseInt(data.list[x].temp.day)-273) +'<sup>o</sup>C</span>');
+
+                            listItem =  $('<li></li>');
+
+                            icon.appendTo(listItem);
+                            temp.appendTo(listItem);
+
+                            listItem.appendTo(container);
+                        }
+                    }
+                });
+            });
+        }
+        function setTabs(){
+            var tabs = $('.aino-inner-tabs');
+            tabs.each(function(){
+                var self = $(this), target ;
+                var btn = $('a[role=tab]',self);
+                btn.each(function(){
+                    var that = $(this);
+
+                    that.unbind('click').on('click', function(){
+
+                        $('.aino-deliver-to .delivery-context').removeClass('active') ;
+                        target = that.attr('href');
+                        target = target.substr(1);
+                        $('.tab-list:not([data-target='+target+'])',tabs).hide();
+                        var col2 = tabs.find('[data-target='+target+']');
+
+                        if(self.find('[data-target='+target+']').css('display') === 'none'){
+                            col2.parent().siblings('li').removeClass('active');
+                            col2.show().addClass('active');
+                            col2.parent().addClass('active');
+                            that.parent('li').addClass('active');
+                            that.parent('li').siblings().removeClass('active');
+                        }
+                        else{
+                            col2.parent().siblings('ul').addClass('active');
+                            col2.hide().removeClass('active');
+                            col2.parent().removeClass('active');
+                            that.parent('li').removeClass('active');
+                        }
+                        col2.closest('.aio-nav').siblings().hide().removeClass('active');
+                    });
+                });
+
+                var close = $(this).find('.close');
+                close.each(function(){
+                    $(this).on('click', function(){
+                        setDeactive(self,target);
+                        btn.parent('li').removeClass('active');
+                        $('.aino-deliver-to .delivery-context').addClass('active') ;
+                    });
+                });
+
+                var closeInner = self.find('.close-inner');
+                closeInner.each(function(){
+                    $(this).on('click', function(){
+                        $(this).closest('.delivery-time').hide();
+                        $(this).closest('.delivery-time')
+                            .siblings('.aino-calendar-holder')
+                            .find('.toggle-calendar').hide();
+                        $(this).closest('.delivery-time')
+                            .siblings('.aino-calendar-holder')
+                            .find('.aino-calendar').removeClass('hidden');
+                    });
+                });
+            });
+
+
+        }
+
+        function setDeactive(tabs,target){
+            $(tabs).find('[data-target='+target+']').parent().siblings('ul').addClass('active');
+            $(tabs).find('[data-target='+target+']').hide().removeClass('active');
+            $(tabs).find('[data-target='+target+']').parent().removeClass('active');
+        }
+        function setJQueryTabs(){
+            /*
+             events for switching the outer tabs (buttons on the left)
+             set active tab, show child, and set the others tabs to unactive
+             */
+            $('.aino-deliver-to > li > a').on('click', function(){
+
+                if($(this).attr('href') === '#post-office' && $(window).width() > 767){
+                    $('.aino-weather').hide();
+                }
+                else{
+                    $('.aino-weather').show();
+                }
+
+                $('.aino-deliver-to .delivery-context').addClass('active') ;
+                $('.tab-list.aino-column-2').removeClass('active').hide();
+                $('.tab-list.aino-column').removeClass('active');
+                $('.aino-inner-tabs > ul li').removeClass('active');
+                var el = $(this).parent();
+                el.addClass('ui-state-active');
+                el.siblings().removeClass('ui-state-active');
+                $('.aino-deliver-to .tab-list.aino-column').hide().removeClass('active');
+                var activeTab = el.find('.tab-list.aino-column');
+
+                el.trigger({
+                    type : 'tab.click',
+                    tab  : activeTab
+                });
+                activeTab.show().addClass('active');
+
+                if(aio_opened){
+                    var cont = $('.all-in-one-container');
+                    var evName = 'tab_visible_' + el.attr('data-code');
+                    cont.trigger(evName,[]);
+                    console.info('++ trigered tab.visible for ' + evName);
+                }
+
+            });
+        }
+    }
+
+    function InitAioBaseAfterScripts() {
+        var $ = jQuery;
+
+        var radios = $('input[type=radio][name=delivery]');
+        console.log('radios');
+        console.log(radios);
+        radios.unbind('change');
+        radios.on('change',function(){
+            var closest = $(this).closest('.aino-inner-tabs');
+            var el =  $('.aino-textarea-holder',closest);
+            if($(this).val() == '<?php echo Mage::helper('vc_aio')->__('Other place'); ?>' || $(this).val() == 'Utan kvittens (paketet ställs utanför dörren)'){
+                el.show();
+            }else{
+                el.hide();
+            }
+        });
+
+        var liEls = $('.aino-column-2 .aino-nav > li:not(.aino-sub-nav)');
+        liEls.unbind('click');
+        liEls.on('click',function(){
+            var self = $(this);
+
+            var tabDiv = self.closest('.tab-list.active');
+            var elsToUncheck = $('input',tabDiv) ;
+            $('.aino-deliver-to .delivery-context').addClass('active') ;
+
+            elsToUncheck.prop('checked',false).attr('checked',false);
+//            self.closest('.tab-list.active input[chekced]').prop('checked',false).attr('checked',false);
+
+            // console.log($(this).find('label input').val());
+            self.closest('.tab-list.active.aino-column-2').hide().find('li').removeClass('aino-active');
+//            self.closest('.aino-nav').find('li').removeClass('active');
+            self.addClass('aino-active');
+
+            $('input[type=radio]',self).prop('checked',true).attr('checked',true).trigger('change');
+            var parentTarget = self.parents('.aino-column-2').attr('data-target');
+
+            if(self.find('.aino-nav').length != 0 ){
+                self.unbind('click');
+            }
+
+
+            self.closest('.aino-inner-tabs').find("[href=#"+parentTarget+"] span").html(self.find('label .label-text').html());
+
+        });
+        $('.aino-deliver-to > li > a').first().click();
+
+        // postcode reload - fix for Magestore_Onestepcheckoud
+        if ($('#one-step-checkout-form').length > 0 && typeof save_address_information !== 'undefined' && typeof save_address_url !== 'undefined' && typeof update_address_shipping !== 'undefined' && typeof update_address_payment !== 'undefined' && typeof update_address_review !== 'undefined') {
+            $('[name="billing[postcode]"],[name="shipping[postcode]"]').change(function () {
+                save_address_information(save_address_url, update_address_shipping, update_address_payment, update_address_review);
+            });
+        }
+    }
+
+    var init_runned = false;
+    jQuery(document).ready(function () {
+        if (init_runned == false) {
+            InitAioBaseScripts();
+            InitAioBaseAfterScripts();
+            init_runned = true;
+        }
+    });
+    jQuery(window).load(function () {
+        if (init_runned == false) {
+            InitAioBaseScripts();
+            InitAioBaseAfterScripts();
+            init_runned = true;
+        }
+    });
+</script>
+<?php echo $this->getChildHtml('body_scripts') ?>
