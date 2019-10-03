@@ -1,16 +1,19 @@
 {
-    "name": "OpenMageModuleFostering/postnord_delivery_module",
+    "name": "OpenMageModuleFostering\/postnord_delivery_module",
     "type": "magento-module",
     "license": "MIT",
     "homepage": "",
     "description": "vConnect All In One module",
     "authors": [
-    {
-        "name": "vConnect",
-        "email": "kontakt@vconnect.dk"
-    }
-],
+        {
+            "name": "vConnect",
+            "email": "kontakt@vconnect.dk"
+        }
+    ],
     "suggest": {
-        "magento-hackathon/magento-composer-installer": "*"
-    }
+        "magento-hackathon\/magento-composer-installer": "*"
+    },
+    "keywords": [
+        "openmage-module"
+    ]
 }
