@@ -1,5 +1,5 @@
 {
-    "name": "OpenMageModuleFostering\/postnord_delivery_module",
+    "name": "openmage-module-fostering\/postnord_delivery_module",
     "type": "magento-module",
     "license": "MIT",
     "homepage": "",
